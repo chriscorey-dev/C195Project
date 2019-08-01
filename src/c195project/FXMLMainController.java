@@ -17,6 +17,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class
@@ -33,6 +36,12 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     private ListView appointmentsListView;
+    
+//    @FXML
+//    private TableView appointmentsTableView;
+//    
+//    @FXML
+//    private TableColumn appointmentsTableTitleColumn;
     
     @FXML
     private ListView customersListView;
@@ -64,16 +73,20 @@ public class FXMLMainController implements Initializable {
     }
     
     private void updateAppointments() {
-        // TODO: Fill array with appointment object, and pull title to push to listview. When clicked it displayes more data & has access to the ID
+        // TODO: Fill array with appointment object, and pull title to push to tableView. When clicked it displayes more data & has access to the ID
         
         ArrayList<String> appointmentList = DBConnection.getDBAppointmentsFromDate(datePicker.getValue());
         
         ObservableList<String> list = FXCollections.observableArrayList(appointmentList);
         appointmentsListView.setItems(list);
+//        appointmentsTableView.setItems(list);
+//        appointmentsTableTitleColumn.setCellValueFactory(new PropertyValueFactory("title"));
+//        appointmentsTableTitleColumn.;
+//        appointmentsTableView.getColumns().setAll(list);
     }
     
     private void updateCustomers() {
-        ArrayList<String> customerList = DBConnection.getDBCustomers(datePicker.getValue());
+        ArrayList<String> customerList = DBConnection.getDBCustomers();
         
         ObservableList<String> list = FXCollections.observableArrayList(customerList);
         customersListView.setItems(list);

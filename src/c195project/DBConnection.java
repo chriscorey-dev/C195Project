@@ -66,7 +66,7 @@ public class DBConnection {
         return appointments;
     }
     
-    public static ArrayList<String> getDBCustomers(LocalDate date) {
+    public static ArrayList<String> getDBCustomers() {
             
         ArrayList<String> customers = new ArrayList<>();
         
@@ -86,5 +86,22 @@ public class DBConnection {
         }
         
         return customers;
+    }
+    
+    public static void addDBAppointment(Appointment appointment) {
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            
+            String start = appointment.getDate().toString() + " " + appointment.getStartTime();
+            String end = appointment.getDate().toString() + " " + appointment.getEndTime();
+            
+            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+start+"', DATETIME), CONVERT('"+end+"', DATETIME), NOW(), (SELECT "+appointment.getUserId()+"), "+appointment.getUserId()+");";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 }
