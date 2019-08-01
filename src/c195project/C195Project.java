@@ -31,7 +31,7 @@ public class C195Project extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         SceneManager sceneManager = new SceneManager(stage);
-        SceneManager.loadScene(SceneManager.getAllScenes().get(0));
+        SceneManager.loadScene(SceneManager.LOGIN_FXML);
     }
 
     /**

@@ -56,7 +56,7 @@ public class FXMLLoginController implements Initializable {
                 errorLabel.setTextFill(Color.web("#00ff00"));
                 errorLabel.setText("Logged in");
                 
-                SceneManager.loadScene(SceneManager.getAllScenes().get(1));
+                SceneManager.loadScene(SceneManager.MAIN_FXML);
             } else {
                 // TODO: Multiple languages
                 errorLabel.setTextFill(Color.web("#ff0000"));

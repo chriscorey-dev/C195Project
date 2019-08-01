@@ -7,7 +7,13 @@ package c195project;
 
 import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,5 +41,50 @@ public class DBConnection {
         conn.close();
         
         System.out.println("Connection Closed");
+    }
+    
+    public static ArrayList<String> getDBAppointmentsFromDate(LocalDate date) {
+            
+        ArrayList<String> appointments = new ArrayList<>();
+        
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+//            String query = "SELECT CONVERT(start, DATE) FROM appointment WHERE CONVERT(start, DATE) = CONVERT('"+date.toString()+"', DATE);";
+            String query = "SELECT * FROM appointment WHERE CONVERT(start, DATE) = CONVERT('"+date.toString()+"', DATE);";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+                appointments.add(result.getString("title"));
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return appointments;
+    }
+    
+    public static ArrayList<String> getDBCustomers(LocalDate date) {
+            
+        ArrayList<String> customers = new ArrayList<>();
+        
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            String query = "SELECT * FROM customer WHERE active = 1;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+                customers.add(result.getString("customerName"));
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return customers;
     }
 }
