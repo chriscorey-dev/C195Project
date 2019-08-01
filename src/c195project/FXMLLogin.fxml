@@ -9,8 +9,8 @@
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="c195project.FXMLLoginController">
    <children>
       <Text layoutX="226.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
-      <TextField fx:id="usernameField" layoutX="226.0" layoutY="168.0" />
-      <TextField fx:id="passwordField" accessibleRole="PASSWORD_FIELD" layoutX="226.0" layoutY="225.0" />
+      <TextField fx:id="usernameField" layoutX="226.0" layoutY="168.0" onAction="#loginAction" />
+      <TextField fx:id="passwordField" accessibleRole="PASSWORD_FIELD" layoutX="226.0" layoutY="225.0" onAction="#loginAction" />
       <Text layoutX="226.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
       <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" />
       <Button fx:id="loginBtn" layoutX="225.0" layoutY="260.0" mnemonicParsing="false" onAction="#loginAction" text="Submit" />

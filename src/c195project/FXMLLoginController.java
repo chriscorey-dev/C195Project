@@ -16,9 +16,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import org.w3c.dom.Text;
 
 /**
@@ -39,24 +44,24 @@ public class FXMLLoginController implements Initializable {
     
     @FXML
     private void loginAction(ActionEvent event) {
-//        System.out.println("You clicked me!");
-//        getAllEmployees().get(0).setName("Bill Williamson");
-
-            
         try {
             
             Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM user WHERE username = '" + usernameField.getText() + "' AND password = '" + passwordField.getText() + "' AND active = 1;";
+            String query = "SELECT * FROM user WHERE username = '" + usernameField.getText() + "' AND BINARY password = '" + passwordField.getText() + "' AND active = 1;";
             
             ResultSet result = statement.executeQuery(query);
             
+            // Valid login
             if (result.next()) {
-                errorLabel.setText("");
+                errorLabel.setTextFill(Color.web("#00ff00"));
+                errorLabel.setText("Logged in");
+                
+                SceneManager.loadScene(SceneManager.getAllScenes().get(1));
             } else {
                 // TODO: Multiple languages
-                errorLabel.setText("Invalid Credentials");
+                errorLabel.setTextFill(Color.web("#ff0000"));
+                errorLabel.setText("The username and password did not match.");
             }
-            
             
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());

@@ -30,13 +30,8 @@ public class C195Project extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-//        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLLogin.fxml"));
-        
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        stage.show();
+        SceneManager sceneManager = new SceneManager(stage);
+        SceneManager.loadScene(SceneManager.getAllScenes().get(0));
     }
 
     /**
