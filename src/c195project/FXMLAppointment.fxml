@@ -45,5 +45,6 @@
       </AnchorPane>
       <Button fx:id="submitAppointmentButton" layoutX="315.0" layoutY="275.0" mnemonicParsing="false" onAction="#submitAppointmentHandle" text="Save" />
       <Button fx:id="cancelAppointmentButton" layoutX="374.0" layoutY="275.0" mnemonicParsing="false" onAction="#cancelAppointmentHandle" text="Cancel" />
+      <Label fx:id="validation" layoutX="313.0" layoutY="312.0" />
    </children>
 </AnchorPane>

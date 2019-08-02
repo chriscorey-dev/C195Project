@@ -75,7 +75,8 @@ public class FXMLMainController implements Initializable {
     private void updateAppointments() {
         // TODO: Fill array with appointment object, and pull title to push to tableView. When clicked it displayes more data & has access to the ID
         
-        ArrayList<String> appointmentList = DBConnection.getDBAppointmentsFromDate(datePicker.getValue());
+//        ArrayList<String> appointmentList = DBConnection.getDBAppointmentsFromDate(datePicker.getValue());
+        ArrayList<String> appointmentList = SQLQueries.getAppointmentsOnDate(datePicker.getValue());
         
         ObservableList<String> list = FXCollections.observableArrayList(appointmentList);
         appointmentsListView.setItems(list);
@@ -86,7 +87,8 @@ public class FXMLMainController implements Initializable {
     }
     
     private void updateCustomers() {
-        ArrayList<String> customerList = DBConnection.getDBCustomers();
+//        ArrayList<String> customerList = DBConnection.getDBCustomers();
+        ArrayList<String> customerList = SQLQueries.getAllCustomers();
         
         ObservableList<String> list = FXCollections.observableArrayList(customerList);
         customersListView.setItems(list);

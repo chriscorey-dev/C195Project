@@ -82,4 +82,27 @@ public class Appointment {
     public String getEndTime() {
         return endTime;
     }
+    
+    public static boolean validate(Appointment appointment) {
+        
+        if (appointment.getTitle().isEmpty()) {
+            return false;
+        } else if (appointment.getLocation().isEmpty()) {
+            return false;
+        } else if (appointment.getContact().isEmpty()) {
+            return false;
+        } else if (appointment.getType().isEmpty()) {
+            return false;
+        } else if (appointment.getUrl().isEmpty()) {
+            return false;
+        } else if (appointment.getDate() == null) {
+            return false;
+        } else if (appointment.getStartTime().isEmpty()) {
+            return false;
+        } else if (appointment.getEndTime().isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

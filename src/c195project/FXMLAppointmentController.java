@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -33,13 +34,19 @@ public class FXMLAppointmentController implements Initializable {
     @FXML private TextField startTime;
     @FXML private TextField endTime;
     @FXML private Spinner customer;
+    @FXML private Label validation;
     
     @FXML
     private void submitAppointmentHandle(ActionEvent event) {
         // TODO: Validate
         
-        Appointment appointment = new Appointment(1, 1, title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
-        DBConnection.addDBAppointment(appointment);
+        Appointment appointment = new Appointment(1, C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
+        if (Appointment.validate(appointment)) {
+            SQLQueries.addAppointment(appointment);
+            SceneManager.loadScene(SceneManager.MAIN_FXML);
+        } else {
+            validation.setText("Validation errors");
+        }
     }
     
     @FXML
@@ -51,6 +58,5 @@ public class FXMLAppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO: Check if updating or adding new. If updating insert correct fields
-    }    
-    
+    }
 }

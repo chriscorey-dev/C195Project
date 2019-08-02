@@ -27,6 +27,15 @@ public class C195Project extends Application {
     
     final static ArrayList<Employee> allEmployees = new ArrayList<>();
     public static Connection conn;
+    private static User loggedInUser = null;
+    
+    public static void setLoggedInUser(User user) {
+        loggedInUser = user;
+    }
+    
+    public static User getLoggedInUser() {
+        return loggedInUser;
+    }
     
     @Override
     public void start(Stage stage) throws Exception {

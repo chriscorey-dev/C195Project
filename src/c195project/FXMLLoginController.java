@@ -6,7 +6,6 @@
 package c195project;
 
 import static c195project.C195Project.conn;
-import static c195project.C195Project.getAllEmployees;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,15 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 /**
  * FXML Controller class
@@ -37,24 +32,24 @@ public class FXMLLoginController implements Initializable {
     private TextField usernameField;
 
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
 
     @FXML
     private Label errorLabel;
     
     @FXML
     private void loginAction(ActionEvent event) {
+        
+        ResultSet result = SQLQueries.checkLoginCredentials(usernameField.getText(), passwordField.getText());
+            
         try {
-            
-            Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM user WHERE username = '" + usernameField.getText() + "' AND BINARY password = '" + passwordField.getText() + "' AND active = 1;";
-            
-            ResultSet result = statement.executeQuery(query);
-            
             // Valid login
             if (result.next()) {
                 errorLabel.setTextFill(Color.web("#00ff00"));
                 errorLabel.setText("Logged in");
+                
+                User loggedInUser = new User(result.getInt("userId"), result.getString("username"));
+                C195Project.setLoggedInUser(loggedInUser);
                 
                 SceneManager.loadScene(SceneManager.MAIN_FXML);
             } else {
@@ -62,7 +57,6 @@ public class FXMLLoginController implements Initializable {
                 errorLabel.setTextFill(Color.web("#ff0000"));
                 errorLabel.setText("The username and password did not match.");
             }
-            
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
