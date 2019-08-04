@@ -5,16 +5,20 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="c195project.FXMLLoginController">
    <children>
-      <Text layoutX="226.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
-      <Text layoutX="226.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
-      <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" />
-      <TextField fx:id="usernameField" layoutX="226.0" layoutY="168.0" onAction="#loginAction" />
-      <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="225.0" onAction="#loginAction" />
-      <Button fx:id="loginBtn" layoutX="225.0" layoutY="260.0" mnemonicParsing="false" onAction="#loginAction" text="Submit" />
-      <Label fx:id="errorLabel" layoutX="226.0" layoutY="294.0" textFill="RED" />
+      <VBox layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
+            <TextField fx:id="usernameField" onAction="#loginAction" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
+            <PasswordField fx:id="passwordField" onAction="#loginAction" />
+            <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#loginAction" text="Submit" />
+            <Label fx:id="errorLabel" textFill="RED" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

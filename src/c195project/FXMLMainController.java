@@ -9,13 +9,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -28,26 +32,15 @@ import javafx.util.Callback;
  */
 public class FXMLMainController implements Initializable {
 
-    @FXML
-    private Button addAppointmentButton;
-
-    @FXML
-    private Button addCustomerButton;
-    
-    @FXML
-    private ListView<Appointment> appointmentsListView;
-    
-//    @FXML
-//    private TableView appointmentsTableView;
-//    
-//    @FXML
-//    private TableColumn appointmentsTableTitleColumn;
-    
-    @FXML
-    private ListView<Customer> customersListView;
-    
-    @FXML
-    private DatePicker datePicker;
+    @FXML private Button addAppointmentButton;
+    @FXML private Button addCustomerButton;
+    @FXML private Button editAppointmentButton;
+    @FXML private Button editCustomerButton;
+    @FXML private Button deleteAppointmentButton;
+    @FXML private Button deleteCustomerButton;
+    @FXML private ListView<Appointment> appointmentsListView;
+    @FXML private ListView<Customer> customersListView;
+    @FXML private DatePicker datePicker;
     
     @FXML
     private void addAppointmentHandler(ActionEvent event) throws IOException {
@@ -57,6 +50,39 @@ public class FXMLMainController implements Initializable {
     @FXML
     private void addCustomerHandler(ActionEvent event) throws IOException {
         SceneManager.loadScene(SceneManager.CUSTOMER_FXML);
+    }
+    
+    @FXML
+    private void deleteAppointmentHandler(ActionEvent event) {
+        Appointment appointment = appointmentsListView.getSelectionModel().getSelectedItem();
+        
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Deleting Appointment");
+        alert.setContentText("Are you sure you want to delete " + appointment.getTitle() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            SQLQueries.deleteAppointmentById(appointment.getAppointmentId());
+            updateAppointments();
+        }
+    }
+    
+    @FXML
+    private void deleteCustomerHandler(ActionEvent event) {
+        Customer customer = customersListView.getSelectionModel().getSelectedItem();
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Deleting Cusomer");
+        alert.setContentText("Are you sure you want to delete " + customer.getCustomerName()+ " and all of it's related appointments?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            SQLQueries.deleteAppointmentByCustomerId(customer.getCustomerId());
+            SQLQueries.deleteCustomerById(customer.getCustomerId());
+            updateAppointments();
+            updateCustomers();
+        }
     }
     
     @FXML
@@ -95,6 +121,10 @@ public class FXMLMainController implements Initializable {
             }
         });
         appointmentsListView.setItems(list);
+        appointmentsListView.getSelectionModel().select(0);
+        
+        deleteAppointmentButton.setDisable(list.isEmpty());
+        editAppointmentButton.setDisable(list.isEmpty());
     }
     
     private void updateCustomers() {
@@ -120,5 +150,9 @@ public class FXMLMainController implements Initializable {
             }
         });
         customersListView.setItems(list);
+        customersListView.getSelectionModel().select(0);
+        
+        deleteCustomerButton.setDisable(list.isEmpty());
+        editCustomerButton.setDisable(list.isEmpty());
     }
 }

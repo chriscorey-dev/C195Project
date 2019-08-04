@@ -157,8 +157,6 @@ public class SQLQueries {
             String query = "INSERT INTO address(address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('"+address.getAddress()+"', '"+address.getAddress2()+"', "+address.getCityId()+", '"+address.getPostalCode()+"', '"+address.getPhone()+"', NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
             
             int result = statement.executeUpdate(query);
-            
-            System.out.println("asdf: " + result);
         
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -212,6 +210,47 @@ public class SQLQueries {
             Statement statement = (Statement) conn.createStatement();
             
             String query = "INSERT INTO customer(customerName, addressId, active, createDate, createdBy, lastUpdateBy) VALUES ('"+customer.getCustomerName()+"', "+customer.getAddressId()+", "+customer.getActive()+", NOW(),'"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    
+    public static void deleteCustomerById(int customerId) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            String query = "DELETE FROM customer WHERE customerId = "+customerId+";";
+            // TODO: Also delete related address & appointments
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void deleteAppointmentByCustomerId(int customerId) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            String query = "DELETE FROM appointment WHERE customerId = "+customerId+";";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void deleteAppointmentById(int appointmentId) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            String query = "DELETE FROM appointment WHERE appointmentId = "+appointmentId+";";
             
             int result = statement.executeUpdate(query);
         
