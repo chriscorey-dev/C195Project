@@ -5,17 +5,26 @@
  */
 package c195project;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -33,24 +42,35 @@ public class FXMLAppointmentController implements Initializable {
     @FXML private TextField url;
     @FXML private TextField startTime;
     @FXML private TextField endTime;
-    @FXML private Spinner customer;
+    @FXML private ListView<Customer> customers;
     @FXML private Label validation;
     
     @FXML
-    private void submitAppointmentHandle(ActionEvent event) {
+    private void submitAppointmentHandle(ActionEvent event) throws IOException {
         // TODO: Validate
         
-        Appointment appointment = new Appointment(1, C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
-        if (Appointment.validate(appointment)) {
+        Customer customer = (Customer) customers.getSelectionModel().getSelectedItem();
+        if (customer == null) {
+            validation.setText(":c");
+            return;
+        }
+        Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
+        ArrayList<String> errors = Appointment.validate(appointment);
+        
+        if (errors.isEmpty()) {
             SQLQueries.addAppointment(appointment);
             SceneManager.loadScene(SceneManager.MAIN_FXML);
         } else {
-            validation.setText("Validation errors");
+            String errorString = "";
+            for(String error : errors) {
+                errorString += error + "\n";
+            }
+            validation.setText(errorString);
         }
     }
     
     @FXML
-    private void cancelAppointmentHandle(ActionEvent event) {
+    private void cancelAppointmentHandle(ActionEvent event) throws IOException {
         // TODO: Confirmation dialog
         SceneManager.loadScene(SceneManager.MAIN_FXML);
     }
@@ -58,5 +78,33 @@ public class FXMLAppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO: Check if updating or adding new. If updating insert correct fields
+//            validation.setWrapText(true);
+
+        populateCustomers();
+    }
+    
+    private void populateCustomers() {
+        ArrayList<Customer> customerList = SQLQueries.getAllCustomers();
+
+        ObservableList<Customer> list = FXCollections.observableArrayList(customerList);
+        customers.setCellFactory(new Callback<ListView<Customer>, ListCell<Customer>>() {
+
+            @Override
+            public ListCell<Customer> call(ListView<Customer> param) {
+                ListCell<Customer> cell = new ListCell<Customer>() {
+                    @Override
+                    protected void updateItem(Customer item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getCustomerName());
+                        } else {
+                            setText("");
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
+        customers.setItems(list);
     }
 }

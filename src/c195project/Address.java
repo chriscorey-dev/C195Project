@@ -11,48 +11,55 @@ import java.util.ArrayList;
  *
  * @author chris
  */
-public class Customer {
+public class Address {
 
-    private final int customerId;
-    private final String customerName;
     private int addressId;
-    private final int active;
 
-    public Customer(String customerName, int addressId, int active) {
-        this.customerId = -1;
-        this.customerName = customerName;
+    private final String address;
+    private final String address2;
+    private final int cityId;
+    private final String postalCode;
+    private final String phone;
+    
+    public Address(int addressId, String address, String address2, int cityId, String postalCode, String phone) {
         this.addressId = addressId;
-        this.active = active;
-    }
-
-    public Customer(int customerId, String customerName, int addressId, int active) {
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.addressId = addressId;
-        this.active = active;
-    }
-
-    public void setAddressId(int addressId) {
-        this.addressId = addressId;
+        this.address = address;
+        this.address2 = address2;
+        this.cityId = cityId;
+        this.postalCode = postalCode;
+        this.phone = phone;
     }
     
-    public int getCustomerId() {
-        return customerId;
+    public Address(String address, String address2, int cityId, String postalCode, String phone) {
+        this.addressId = -1;
+        this.address = address;
+        this.address2 = address2;
+        this.cityId = cityId;
+        this.postalCode = postalCode;
+        this.phone = phone;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getAddress() {
+        return address;
     }
 
-    public int getAddressId() {
-        return addressId;
+    public String getAddress2() {
+        return address2;
     }
 
-    public int getActive() {
-        return active;
+    public int getCityId() {
+        return cityId;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getPhone() {
+        return phone;
     }
     
-    public static ArrayList<String> validate(Customer customer) {
+    public static ArrayList<String> validate(Address address) {
         ArrayList<String> errors = new ArrayList<>();
         
 //        if (appointment.getTitle().isEmpty()) {

@@ -5,6 +5,7 @@
  */
 package c195project;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,10 +17,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -35,7 +35,7 @@ public class FXMLMainController implements Initializable {
     private Button addCustomerButton;
     
     @FXML
-    private ListView appointmentsListView;
+    private ListView<Appointment> appointmentsListView;
     
 //    @FXML
 //    private TableView appointmentsTableView;
@@ -44,18 +44,18 @@ public class FXMLMainController implements Initializable {
 //    private TableColumn appointmentsTableTitleColumn;
     
     @FXML
-    private ListView customersListView;
+    private ListView<Customer> customersListView;
     
     @FXML
     private DatePicker datePicker;
     
     @FXML
-    private void addAppointmentHandler(ActionEvent event) {
+    private void addAppointmentHandler(ActionEvent event) throws IOException {
         SceneManager.loadScene(SceneManager.APPOINTMENT_FXML);
     }
     
     @FXML
-    private void addCustomerHandler(ActionEvent event) {
+    private void addCustomerHandler(ActionEvent event) throws IOException {
         SceneManager.loadScene(SceneManager.CUSTOMER_FXML);
     }
     
@@ -73,24 +73,52 @@ public class FXMLMainController implements Initializable {
     }
     
     private void updateAppointments() {
-        // TODO: Fill array with appointment object, and pull title to push to tableView. When clicked it displayes more data & has access to the ID
-        
-//        ArrayList<String> appointmentList = DBConnection.getDBAppointmentsFromDate(datePicker.getValue());
-        ArrayList<String> appointmentList = SQLQueries.getAppointmentsOnDate(datePicker.getValue());
-        
-        ObservableList<String> list = FXCollections.observableArrayList(appointmentList);
+        ArrayList<Appointment> customerList = SQLQueries.getUsersApponitmentsOnDate(datePicker.getValue());
+
+        ObservableList<Appointment> list = FXCollections.observableArrayList(customerList);
+        appointmentsListView.setCellFactory(new Callback<ListView<Appointment>, ListCell<Appointment>>() {
+
+            @Override
+            public ListCell<Appointment> call(ListView<Appointment> param) {
+                ListCell<Appointment> cell = new ListCell<Appointment>() {
+                    @Override
+                    protected void updateItem(Appointment item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getTitle());
+                        } else {
+                            setText("");
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
         appointmentsListView.setItems(list);
-//        appointmentsTableView.setItems(list);
-//        appointmentsTableTitleColumn.setCellValueFactory(new PropertyValueFactory("title"));
-//        appointmentsTableTitleColumn.;
-//        appointmentsTableView.getColumns().setAll(list);
     }
     
     private void updateCustomers() {
-//        ArrayList<String> customerList = DBConnection.getDBCustomers();
-        ArrayList<String> customerList = SQLQueries.getAllCustomers();
-        
-        ObservableList<String> list = FXCollections.observableArrayList(customerList);
+        ArrayList<Customer> customerList = SQLQueries.getAllCustomers();
+
+        ObservableList<Customer> list = FXCollections.observableArrayList(customerList);
+        customersListView.setCellFactory(new Callback<ListView<Customer>, ListCell<Customer>>() {
+
+            @Override
+            public ListCell<Customer> call(ListView<Customer> param) {
+                ListCell<Customer> cell = new ListCell<Customer>() {
+                    @Override
+                    protected void updateItem(Customer item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getCustomerName());
+                        } else {
+                            setText("");
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
         customersListView.setItems(list);
     }
 }
