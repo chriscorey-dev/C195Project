@@ -9,12 +9,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -25,7 +30,7 @@ public class FXMLCustomerController implements Initializable {
     @FXML private TextField name;
     @FXML private TextField address1;
     @FXML private TextField address2;
-    @FXML private TextField cityId;
+    @FXML private ListView<City> cityListView;
     @FXML private TextField postalCode;
     @FXML private TextField phone;
     @FXML private CheckBox active;
@@ -33,7 +38,8 @@ public class FXMLCustomerController implements Initializable {
     
     @FXML
     private void submitCustomerHandle(ActionEvent event) throws IOException {
-        Address address = new Address(address1.getText(), address2.getText(), 1, postalCode.getText(), phone.getText());
+        
+        Address address = new Address(address1.getText(), address2.getText(), cityListView.getSelectionModel().getSelectedItem().getCityId(), postalCode.getText(), phone.getText());
         ArrayList<String> addressErrors = Address.validate(address);
         
         Customer customer = new Customer(name.getText(), -1, active.isSelected() ? 1 : 0);
@@ -67,7 +73,28 @@ public class FXMLCustomerController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        ArrayList<City> cityList = SQLQueries.getAllCities();
+
+        ObservableList<City> list = FXCollections.observableArrayList(cityList);
+        cityListView.setCellFactory(new Callback<ListView<City>, ListCell<City>>() {
+
+            @Override
+            public ListCell<City> call(ListView<City> param) {
+                ListCell<City> cell = new ListCell<City>() {
+                    @Override
+                    protected void updateItem(City item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getCity());
+                        } else {
+                            setText("");
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
+        cityListView.setItems(list);
+    }
     
 }

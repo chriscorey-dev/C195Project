@@ -66,6 +66,7 @@ public class SQLQueries {
         return appointments;
     }
     
+    // TODO: handle active field elsewhere
     public static ArrayList<Customer> getAllCustomers() {
             
         ArrayList<Customer> customers = new ArrayList<>();
@@ -88,6 +89,29 @@ public class SQLQueries {
         }
         
         return customers;
+    }
+    
+    public static ArrayList<City> getAllCities() {
+            
+        ArrayList<City> cities = new ArrayList<>();
+        
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            String query = "SELECT * FROM city;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+                City city = new City(result.getInt("cityId"), result.getString("city"), result.getInt("countryId"));
+                cities.add(city);
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return cities;
     }
     
     public static ResultSet checkLoginCredentials(String username, String password) {
