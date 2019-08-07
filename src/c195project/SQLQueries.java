@@ -8,9 +8,11 @@ package c195project;
 import static c195project.DBConnection.conn;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import javafx.util.converter.LocalDateStringConverter;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  *
@@ -50,12 +52,18 @@ public class SQLQueries {
             
             ResultSet result = statement.executeQuery(query);
             
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            
             while (result.next()) {
-                LocalDate localDate = LocalDate.parse(result.getString("start").split(" ")[0]);
-                String startTime = result.getString("start").split(" ")[1];
-                String endTime = result.getString("end").split(" ")[1];
+                Date start = format.parse(result.getString("start"));
+                Date end = format.parse(result.getString("end"));
+//                LocalDate localDate = LocalDate.parse(result.getString("start").split(" ")[0]);
+//                String startTime = result.getString("start").split(" ")[1];
+//                String endTime = result.getString("end").split(" ")[1];
                 
-                Appointment appointment = new Appointment(result.getInt("appointmentId"), result.getInt("customerId"), result.getInt("userId"), result.getString("title"), result.getString("description"), result.getString("location"), result.getString("contact"), result.getString("type"), result.getString("url"), localDate, startTime, endTime);
+//                Appointment appointment = new Appointment(result.getInt("appointmentId"), result.getInt("customerId"), result.getInt("userId"), result.getString("title"), result.getString("description"), result.getString("location"), result.getString("contact"), result.getString("type"), result.getString("url"), localDate, startTime, endTime);
+                Appointment appointment = new Appointment(result.getInt("appointmentId"), result.getInt("customerId"), result.getInt("userId"), result.getString("title"), result.getString("description"), result.getString("location"), result.getString("contact"), result.getString("type"), result.getString("url"), start, end);
                 appointments.add(appointment);
             }
         
@@ -131,38 +139,6 @@ public class SQLQueries {
         return result;
     }
     
-    public static void addAppointment(Appointment appointment) {
-        try {
-            
-            Statement statement = (Statement) conn.createStatement();
-            
-            // Time format = ##:##:##
-            
-            String start = appointment.getDate().toString() + " " + appointment.getStartTime();
-            String end = appointment.getDate().toString() + " " + appointment.getEndTime();
-            
-            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+start+"', DATETIME), CONVERT('"+end+"', DATETIME), NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
-            
-            int result = statement.executeUpdate(query);
-        
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-        }
-    }
-    
-    public static void addAddress(Address address) {
-        try {
-            Statement statement = (Statement) conn.createStatement();
-            
-            String query = "INSERT INTO address(address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('"+address.getAddress()+"', '"+address.getAddress2()+"', "+address.getCityId()+", '"+address.getPostalCode()+"', '"+address.getPhone()+"', NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
-            
-            int result = statement.executeUpdate(query);
-        
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-        }
-    }
-    
     public static int getLatestAddressId() {
         int addressId = -1;
         
@@ -203,6 +179,45 @@ public class SQLQueries {
         }
         
         return address;
+    }
+    
+    public static void addAppointment(Appointment appointment) {
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            
+            // Time format = ##:##:##
+            
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            
+            Date start = appointment.getStart();
+            Date end = appointment.getEnd();
+            
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            
+            String startString = format.format(start);
+            String endString = format.format(end);
+            
+            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+startString+"', DATETIME), CONVERT('"+endString+"', DATETIME), NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void addAddress(Address address) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            String query = "INSERT INTO address(address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('"+address.getAddress()+"', '"+address.getAddress2()+"', "+address.getCityId()+", '"+address.getPostalCode()+"', '"+address.getPhone()+"', NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
     
     public static void addCustomer(Customer customer) {

@@ -6,7 +6,11 @@
 package c195project;
 
 import com.mysql.jdbc.Connection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -25,6 +29,22 @@ public class C195Project extends Application {
     
     public static User getLoggedInUser() {
         return loggedInUser;
+    }
+    
+    // String to date (to enter into fields?)
+    // Only need the date in date format to change timezone. Then immediatelyy go back to string to parse into fields in the app or push into database.
+    public static Date convertStringToDate(String dateEntry) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = format.parse(dateEntry);
+        
+        return date;
+    }
+    
+    public static String convertDateToString(Date date) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = dateFormat.format(date);
+        
+        return dateString;
     }
     
     @Override

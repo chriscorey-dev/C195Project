@@ -63,7 +63,6 @@ public class SceneManager {
               break;
             default:
                 System.out.println("Invalid string");
-                return;
           }
     }
     

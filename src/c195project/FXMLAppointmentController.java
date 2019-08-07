@@ -7,8 +7,11 @@ package c195project;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +49,7 @@ public class FXMLAppointmentController implements Initializable {
     @FXML private Label validation;
     
     @FXML
-    private void submitAppointmentHandle(ActionEvent event) throws IOException {
+    private void submitAppointmentHandle(ActionEvent event) throws IOException, ParseException {
         // TODO: Validate
         
         Customer customer = (Customer) customers.getSelectionModel().getSelectedItem();
@@ -54,18 +57,37 @@ public class FXMLAppointmentController implements Initializable {
             validation.setText(":c");
             return;
         }
-        Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
-        ArrayList<String> errors = Appointment.validate(appointment);
+//        Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
+
+
+        // TODO: Time pattern validation here
+        if (startTime.getText().isEmpty() || endTime.getText().isEmpty()) {
+            validation.setText(":c");
+            return;
+        }
         
-        if (errors.isEmpty()) {
-            SQLQueries.addAppointment(appointment);
-            SceneManager.loadScene(SceneManager.MAIN_FXML);
-        } else {
-            String errorString = "";
-            for(String error : errors) {
-                errorString += error + "\n";
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date start = format.parse(date.getValue()+" "+startTime.getText());
+            Date end = format.parse(date.getValue()+" "+endTime.getText());
+        
+//            System.out.println("start: " + format.format(start));
+
+            Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
+            ArrayList<String> errors = Appointment.validate(appointment);
+
+            if (errors.isEmpty()) {
+                SQLQueries.addAppointment(appointment);
+                SceneManager.loadScene(SceneManager.MAIN_FXML);
+            } else {
+                String errorString = "";
+                for(String error : errors) {
+                    errorString += error + "\n";
+                }
+                validation.setText(errorString);
             }
-            validation.setText(errorString);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
     

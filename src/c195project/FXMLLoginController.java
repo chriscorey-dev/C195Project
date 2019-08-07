@@ -10,7 +10,16 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -56,6 +65,93 @@ public class FXMLLoginController implements Initializable {
                 // TODO: Multiple languages
                 errorLabel.setTextFill(Color.web("#ff0000"));
                 errorLabel.setText("The username and password did not match.");
+            
+//    //            DateTime dateTime = new DateTime();
+//                Calendar myCalendar = Calendar.getInstance();
+//                System.out.println("Time: " + myCalendar.getTime());
+//                System.out.println("Time: " + myCalendar.get(Calendar.HOUR_OF_DAY));
+//                myCalendar.set(Calendar.HOUR_OF_DAY, 10);
+//                System.out.println("Time: " + myCalendar.get(Calendar.HOUR_OF_DAY));
+                
+                        
+//                GregorianCalendar gregsCalendar = new GregorianCalendar();
+//                System.out.println("Time: " + gregsCalendar.getTime());
+
+//                TimeZone timeZone = TimeZone.getDefault();
+//                Calendar calendar = Calendar.getInstance();
+////                System.out.println("Timezone: " + timeZone);
+////                System.out.println("GMT: " + calendar.);
+//                System.out.println(Calendar.getInstance().getTimeZone().getDisplayName() + ": " + Calendar.getInstance().getTime());
+//                timeZone.setDefault(TimeZone.getTimeZone("GMT"));
+//                System.out.println(Calendar.getInstance().getTimeZone().getDisplayName() + ": " + Calendar.getInstance().getTime());
+
+
+                // Adjust timezone
+//                Scanner keyboard = new Scanner(System.in);
+//                System.out.print("Enter desired time: ");
+//                int hr = keyboard.nextInt();
+
+
+
+
+                
+//                TimeZone localTimeZone = TimeZone.getDefault();
+//                TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+//                Calendar calendar = Calendar.getInstance();
+//                
+//                calendar.set(Calendar.HOUR_OF_DAY, 18);
+//                calendar.set(Calendar.MINUTE, 0);
+//                calendar.set(Calendar.SECOND, 0);
+//                
+//                System.out.println("Database time (GMT): " + calendar.getTime());
+//                
+//                TimeZone.setDefault(localTimeZone);
+//                System.out.println("Local time: " + calendar.getTime());
+                
+                
+
+
+                // DB Entry:
+                // 2019-08-04 13:00:00
+                
+//                LocalDate localDate = LocalDate.parse("2019-08-04");
+//                Calendar calendar = Calendar.getInstance();
+//                DateTimeFormatter formatter = new DateTimeFormatter("YYYY-MM-DD hh:mm:ss");
+//                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                LocalDateTime localDateTime = LocalDateTime.parse("2019-08-04 13:00:00", formatter);
+//                localDateTime.format(formatter);
+//                localDateTime = LocalDateTime.parse("2019-08-04 13:00:00", formatter);
+////                calendar.set(localDateTime);
+
+                
+//                // This is how to parse dates from the database
+//                TimeZone timeZone = TimeZone.getDefault();
+//                TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+//                
+//                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                Date date = format.parse("2019-08-04 13:00:00");
+//                
+//                TimeZone.setDefault(timeZone);
+//                System.out.println("Date: " + date.getTime());
+
+
+//                // ..And back again
+//                TimeZone localTimeZone = TimeZone.getDefault();
+//                
+//                Date date = C195Project.convertStringToDate("2019-08-04 13:00:00");
+//                
+//                System.out.println("Local Date: " + date);
+//                TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+//                System.out.println("GMT Date: " + date);
+//                TimeZone.setDefault(localTimeZone);
+                
+                
+////                TimeZone.setDefault(TimeZone.getTimeZone("GMT")); // Activitating this line will return the stringDate in GMT timezone
+//                String dateString = C195Project.convertDateToString(date);
+////                TimeZone.setDefault(localTimeZone); // And this resets back to local
+//                System.out.println("Time: " + dateString);
+                
+                
             }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());

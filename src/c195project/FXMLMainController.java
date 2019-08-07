@@ -53,6 +53,16 @@ public class FXMLMainController implements Initializable {
     }
     
     @FXML
+    private void editAppointmentHandler(ActionEvent event) throws IOException {
+        SceneManager.loadScene(SceneManager.APPOINTMENT_FXML);
+    }
+    
+    @FXML
+    private void editCustomerHandler(ActionEvent event) throws IOException {
+        SceneManager.loadScene(SceneManager.CUSTOMER_FXML);
+    }
+    
+    @FXML
     private void deleteAppointmentHandler(ActionEvent event) {
         Appointment appointment = appointmentsListView.getSelectionModel().getSelectedItem();
         

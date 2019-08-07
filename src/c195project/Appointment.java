@@ -5,9 +5,9 @@
  */
 package c195project;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -29,6 +29,9 @@ public class Appointment {
     private final String startTime;
     private final String endTime;
     
+    private final Date start;
+    private final Date end;
+    
     public Appointment(int customerId, int userId, String title, String description, String location, String contact, String type, String url, LocalDate date, String startTime, String endTime) {
         this.appointmentId = -1;
         this.customerId = customerId;
@@ -41,7 +44,10 @@ public class Appointment {
         this.url = url;
         this.date = date;
         this.startTime = startTime;
-        this.endTime = endTime;   
+        this.endTime = endTime;
+        
+        this.start = null;
+        this.end = null;
     }
     
     public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url, LocalDate date, String startTime, String endTime) {
@@ -56,7 +62,46 @@ public class Appointment {
         this.url = url;
         this.date = date;
         this.startTime = startTime;
-        this.endTime = endTime;   
+        this.endTime = endTime;
+        
+        this.start = null;
+        this.end = null;
+    }
+    
+    public Appointment(int customerId, int userId, String title, String description, String location, String contact, String type, String url, Date start, Date end) {
+        this.appointmentId = -1;
+        this.customerId = customerId;
+        this.userId = userId;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.contact = contact;
+        this.type = type;
+        this.url = url;
+        this.start = start;
+        this.end = end;
+        
+        this.date = null;
+        this.startTime = null;
+        this.endTime = null;
+    }
+    
+    public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url, Date start, Date end) {
+        this.appointmentId = appointmentId;
+        this.customerId = customerId;
+        this.userId = userId;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.contact = contact;
+        this.type = type;
+        this.url = url;
+        this.start = start;
+        this.end = end;
+        
+        this.date = null;
+        this.startTime = null;
+        this.endTime = null;
     }
 
     public int getCustomerId() {
@@ -99,12 +144,12 @@ public class Appointment {
         return date;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public Date getStart() {
+        return start;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public Date getEnd() {
+        return end;
     }
     
     public static ArrayList<String> validate(Appointment appointment) {
@@ -128,29 +173,26 @@ public class Appointment {
         if (appointment.getUrl().isEmpty()) {
             errors.add("Url field is required");
         }
-        if (appointment.getDate() == null) {
-            errors.add("Date field is required");
-        }
-        if (appointment.getStartTime().isEmpty()) {
-            errors.add("Start Time field is required");
-        }
-        if (appointment.getEndTime().isEmpty()) {
-            errors.add("End Time field is required");
-        }
-        
-        String timePattern = "\\d{2}:\\d{2}:\\d{2}";
-//        String timePattern = "\\d{2}[0-23]:\\d{2}[0-59]:\\d{2}[0-59]";
-//        String timePattern = "\\d[0-2]{2}:\\d{2}:\\d{2}";
-//        String timePatter = "^()$";
-//        Time startTime = new Time(appointment.getStartTime().split(":")[0]);
-//        Time endTime = new Time(1,1,1);
-        if (!appointment.getStartTime().matches(timePattern)) {
-            errors.add("Start Time format must be '##:##:##'");
-        } else if (!appointment.getEndTime().matches(timePattern)) {
-            errors.add("End Time format must be '##:##:##'");}
-//        } else if (startTime.after(endTime)) {
-//            errors.add("Start Time must be before End Time");
+//        if (appointment.getStart() == null) {
+//            errors.add("Start Time is required");
 //        }
+//        if (appointment.getEnd() == null) {
+//            errors.add("End Time is required");
+//        }
+        
+//        String timePattern = "\\d{2}:\\d{2}:\\d{2}";
+////        String timePattern = "\\d{2}[0-23]:\\d{2}[0-59]:\\d{2}[0-59]";
+////        String timePattern = "\\d[0-2]{2}:\\d{2}:\\d{2}";
+////        String timePatter = "^()$";
+////        Time startTime = new Time(appointment.getStartTime().split(":")[0]);
+////        Time endTime = new Time(1,1,1);
+//        if (!appointment.getStartTime().matches(timePattern)) {
+//            errors.add("Start Time format must be '##:##:##'");
+//        } else if (!appointment.getEndTime().matches(timePattern)) {
+//            errors.add("End Time format must be '##:##:##'");}
+////        } else if (startTime.after(endTime)) {
+////            errors.add("Start Time must be before End Time");
+////        }
         
         return errors;
     }
