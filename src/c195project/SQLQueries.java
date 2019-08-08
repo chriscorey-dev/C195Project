@@ -75,7 +75,7 @@ public class SQLQueries {
     }
     
     // TODO: handle active field elsewhere
-    public static ArrayList<Customer> getAllCustomers() {
+    public static ArrayList<Customer> getAllActiveCustomers() {
             
         ArrayList<Customer> customers = new ArrayList<>();
         
@@ -83,6 +83,30 @@ public class SQLQueries {
             
             Statement statement = (Statement) conn.createStatement();
             String query = "SELECT * FROM customer WHERE active = 1;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+//                customers.add(result.getString("customerName"));
+                Customer customer = new Customer(result.getInt("customerId"), result.getString("customerName"), result.getInt("addressId"), result.getInt("active"));
+                customers.add(customer);
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return customers;
+    }
+    
+    public static ArrayList<Customer> getAllCustomers() {
+            
+        ArrayList<Customer> customers = new ArrayList<>();
+        
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            String query = "SELECT * FROM customer;";
             
             ResultSet result = statement.executeQuery(query);
             
@@ -171,7 +195,7 @@ public class SQLQueries {
             ResultSet result = statement.executeQuery(query);
             
             if (result.next()) {
-                new Address(addressId, result.getString("address"), result.getString("address2"), result.getInt("cityId"), result.getString("postalCode"), result.getString("phone"));
+                address = new Address(addressId, result.getString("address"), result.getString("address2"), result.getInt("cityId"), result.getString("postalCode"), result.getString("phone"));
             }
         
         } catch (Exception ex) {
@@ -233,12 +257,25 @@ public class SQLQueries {
         }
     }
     
-    
     public static void deleteCustomerById(int customerId) {
         try {
             Statement statement = (Statement) conn.createStatement();
             
             String query = "DELETE FROM customer WHERE customerId = "+customerId+";";
+            // TODO: Also delete related address & appointments
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void deleteAddressById(int addressId) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            String query = "DELETE FROM address WHERE addressId = "+addressId+";";
             // TODO: Also delete related address & appointments
             
             int result = statement.executeUpdate(query);
@@ -266,6 +303,39 @@ public class SQLQueries {
             Statement statement = (Statement) conn.createStatement();
             
             String query = "DELETE FROM appointment WHERE appointmentId = "+appointmentId+";";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void updateCustomer(Customer customer) {
+        System.out.println("name: " + customer.getCustomerName());
+        
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            
+            // UPDATE customer SET customerName = 'Corn Co.' WHERE customerId = 3;
+            String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE customerId = "+customer.getCustomerId()+";";
+            
+            int result = statement.executeUpdate(query);
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void updateAddress(Address address) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            
+            // UPDATE customer SET customerName = 'Corn Co.' WHERE customerId = 3;
+            String query = "UPDATE address SET address = '"+address.getAddress()+"', address2 = '"+address.getAddress2()+"', cityID = "+address.getCityId()+", postalCode = '"+address.getPostalCode()+"', phone = '"+address.getPhone()+"', lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE addressId = "+address.getAddressId()+";";
+//            String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = "+C195Project.getLoggedInUser().getUsername()+"' WHERE customerId = "+customer.getCustomerId()+";";
             
             int result = statement.executeUpdate(query);
         

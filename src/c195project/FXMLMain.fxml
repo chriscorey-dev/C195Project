@@ -18,7 +18,7 @@
                   <DatePicker fx:id="datePicker" onAction="#selectedDateHandler" prefHeight="25.0" prefWidth="200.0" />
                   <ListView fx:id="appointmentsListView" prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="addAppointmentButton" mnemonicParsing="false" onAction="#addAppointmentHandler" text="New Appointment" />
-                  <Button fx:id="editAppointmentButton" mnemonicParsing="false" text="Edit Appointment" />
+                  <Button fx:id="editAppointmentButton" mnemonicParsing="false" onAction="#editAppointmentHandler" text="Edit Appointment" />
                   <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#deleteAppointmentHandler" text="Delete Appointment" />
                </children>
             </VBox>
@@ -27,7 +27,7 @@
                   <Label text="Customers" />
                   <ListView fx:id="customersListView" prefHeight="225.0" prefWidth="193.0" />
                   <Button fx:id="addCustomerButton" mnemonicParsing="false" onAction="#addCustomerHandler" text="New Customer" />
-                  <Button fx:id="editCustomerButton" mnemonicParsing="false" text="Edit Customer" />
+                  <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#editCustomerHandler" text="Edit Customer" />
                   <Button fx:id="deleteCustomerButton" mnemonicParsing="false" onAction="#deleteCustomerHandler" text="Delete Customer" />
                </children>
             </VBox>

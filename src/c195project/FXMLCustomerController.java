@@ -9,11 +9,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -27,6 +30,8 @@ import javafx.util.Callback;
  * @author chris
  */
 public class FXMLCustomerController implements Initializable {
+//    boolean isEditing = false;
+    
     @FXML private TextField name;
     @FXML private TextField address1;
     @FXML private TextField address2;
@@ -35,6 +40,8 @@ public class FXMLCustomerController implements Initializable {
     @FXML private TextField phone;
     @FXML private CheckBox active;
     @FXML private Label validation;
+    
+    @FXML private Button submitCustomerButton;
     
     @FXML
     private void submitCustomerHandle(ActionEvent event) throws IOException {
@@ -53,6 +60,32 @@ public class FXMLCustomerController implements Initializable {
         
             SQLQueries.addCustomer(customer);
             SceneManager.loadScene(SceneManager.MAIN_FXML);
+        } else {
+            String errorString = "";
+            for(String error : customerErrors) {
+                errorString += error + "\n";
+            }
+            for(String error : addressErrors) {
+                errorString += error + "\n";
+            }
+            validation.setText(errorString);
+        }
+    }
+    
+    private void editCustomerHandle(Customer customer, Address address) {
+        
+        ArrayList<String> addressErrors = Address.validate(address);
+        ArrayList<String> customerErrors = Customer.validate(customer);
+        
+        if (customerErrors.isEmpty() && addressErrors.isEmpty()) {
+        
+            SQLQueries.updateCustomer(customer);
+            SQLQueries.updateAddress(address);
+            try {
+                SceneManager.loadScene(SceneManager.MAIN_FXML);
+            } catch (Exception ex) {
+                System.out.println("Error: " + ex.getMessage());
+            }
         } else {
             String errorString = "";
             for(String error : customerErrors) {
@@ -97,4 +130,29 @@ public class FXMLCustomerController implements Initializable {
         cityListView.setItems(list);
     }
     
+    public void loadCustomer(Customer customer) {
+        Address address = SQLQueries.getAddressById(customer.getAddressId());
+        
+        submitCustomerButton.setOnAction((arg0) -> {
+            Customer updatedCustomer = new Customer(customer.getCustomerId(), name.getText(), customer.getAddressId(), active.isSelected() ? 1 : 0);
+            Address updatedAddress = new Address(customer.getAddressId(), address1.getText(), address2.getText(), cityListView.getSelectionModel().getSelectedItem().getCityId(), postalCode.getText(), phone.getText());
+            editCustomerHandle(updatedCustomer, updatedAddress);
+        });
+        
+        name.setText(customer.getCustomerName());
+        active.setSelected(customer.getActive() == 1);
+        
+        address1.setText(address.getAddress());
+        address2.setText(address.getAddress2());
+        postalCode.setText(address.getPostalCode());
+        phone.setText(address.getPhone());
+        
+        ObservableList<City> cities = cityListView.getItems();
+        for (City city : cities) {
+            if (city.getCityId() == address.getCityId()) {
+                cityListView.getSelectionModel().select(city);
+                break;
+            }
+        }
+    }
 }

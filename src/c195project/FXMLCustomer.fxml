@@ -14,7 +14,7 @@
       <TextField fx:id="address1" layoutX="226.0" layoutY="53.0" />
       <Label layoutX="226.0" layoutY="36.0" text="Address 1" />
       <CheckBox fx:id="active" layoutX="50.0" layoutY="87.0" mnemonicParsing="false" text="Is Active" />
-      <Button layoutX="50.0" layoutY="113.0" mnemonicParsing="false" onAction="#submitCustomerHandle" text="Submit" />
+      <Button fx:id="submitCustomerButton" layoutX="50.0" layoutY="113.0" mnemonicParsing="false" onAction="#submitCustomerHandle" text="Submit" />
       <Button layoutX="115.0" layoutY="113.0" mnemonicParsing="false" onAction="#cancelCustomerHandle" text="Cancel" />
       <Label fx:id="validation" layoutX="50.0" layoutY="225.0" />
       <TextField fx:id="address2" layoutX="388.0" layoutY="53.0" />

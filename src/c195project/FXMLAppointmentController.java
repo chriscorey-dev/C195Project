@@ -20,6 +20,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -48,31 +49,41 @@ public class FXMLAppointmentController implements Initializable {
     @FXML private ListView<Customer> customers;
     @FXML private Label validation;
     
+    @FXML private ChoiceBox startTimeChoiceBox;
+    @FXML private ChoiceBox endTimeChoiceBox;
+    
     @FXML
     private void submitAppointmentHandle(ActionEvent event) throws IOException, ParseException {
         // TODO: Validate
         
         Customer customer = (Customer) customers.getSelectionModel().getSelectedItem();
         if (customer == null) {
-            validation.setText(":c");
+            validation.setText("Pick a customer");
             return;
         }
 //        Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
 
 
         // TODO: Time pattern validation here
-        if (startTime.getText().isEmpty() || endTime.getText().isEmpty()) {
-            validation.setText(":c");
-            return;
-        }
+//        if (startTime.getText().isEmpty() || endTime.getText().isEmpty()) {
+//            validation.setText(":c");
+//            return;
+//        }
         
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date start = format.parse(date.getValue()+" "+startTime.getText());
-            Date end = format.parse(date.getValue()+" "+endTime.getText());
-        
+//            Date start = format.parse(date.getValue()+" "+startTime.getText());
+//            Date end = format.parse(date.getValue()+" "+endTime.getText());
+            Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
+            Date end = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
+            
+            System.out.println("Start string: " + date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
+            System.out.println("Start date: " + start.toString());
+            
+            // TODO: Check if start < end
+            
 //            System.out.println("start: " + format.format(start));
-
+            // startTimeChoiceBox
             Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
             ArrayList<String> errors = Appointment.validate(appointment);
 
@@ -102,11 +113,16 @@ public class FXMLAppointmentController implements Initializable {
         // TODO: Check if updating or adding new. If updating insert correct fields
 //            validation.setWrapText(true);
 
+        String[] asdf = {"8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30"};
+        ObservableList<String> times = FXCollections.observableArrayList(asdf);
+        startTimeChoiceBox.setItems(times);
+        endTimeChoiceBox.setItems(times);
+
         populateCustomers();
     }
     
     private void populateCustomers() {
-        ArrayList<Customer> customerList = SQLQueries.getAllCustomers();
+        ArrayList<Customer> customerList = SQLQueries.getAllActiveCustomers();
 
         ObservableList<Customer> list = FXCollections.observableArrayList(customerList);
         customers.setCellFactory(new Callback<ListView<Customer>, ListCell<Customer>>() {
@@ -128,5 +144,9 @@ public class FXMLAppointmentController implements Initializable {
             }
         });
         customers.setItems(list);
+    }
+    
+    public void loadAppointment(Appointment appointment) {
+        title.setText(appointment.getTitle());
     }
 }

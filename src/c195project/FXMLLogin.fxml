@@ -10,15 +10,15 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="c195project.FXMLLoginController">
    <children>
-      <VBox layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0">
+      <VBox layoutX="250.0" layoutY="100.0" prefHeight="101.0" prefWidth="100.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
             <TextField fx:id="usernameField" onAction="#loginAction" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
             <PasswordField fx:id="passwordField" onAction="#loginAction" />
             <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#loginAction" text="Submit" />
-            <Label fx:id="errorLabel" textFill="RED" />
          </children>
       </VBox>
+      <Label fx:id="errorLabel" layoutX="250.0" layoutY="207.0" textFill="RED" />
    </children>
 </AnchorPane>

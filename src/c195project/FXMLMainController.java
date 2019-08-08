@@ -15,7 +15,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -23,6 +26,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -54,12 +58,25 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     private void editAppointmentHandler(ActionEvent event) throws IOException {
-        SceneManager.loadScene(SceneManager.APPOINTMENT_FXML);
+//        SceneManager.loadScene(SceneManager.APPOINTMENT_FXML);
     }
     
     @FXML
     private void editCustomerHandler(ActionEvent event) throws IOException {
-        SceneManager.loadScene(SceneManager.CUSTOMER_FXML);
+//        SceneManager.loadScene(SceneManager.CUSTOMER_FXML);
+        Customer selectedCustomer = customersListView.getSelectionModel().getSelectedItem();
+        System.out.println("Customer name: " + selectedCustomer.getCustomerName());
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCustomer.fxml"));
+        Parent root = loader.load();
+        
+        FXMLCustomerController customerController = loader.getController();
+        customerController.loadCustomer(selectedCustomer);
+        
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
     
     @FXML
@@ -90,6 +107,7 @@ public class FXMLMainController implements Initializable {
         if (result.get() == ButtonType.OK){
             SQLQueries.deleteAppointmentByCustomerId(customer.getCustomerId());
             SQLQueries.deleteCustomerById(customer.getCustomerId());
+            SQLQueries.deleteAddressById(customer.getAddressId());
             updateAppointments();
             updateCustomers();
         }
@@ -151,6 +169,7 @@ public class FXMLMainController implements Initializable {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.getCustomerName());
+                            setDisabled(item.getActive() == 0);
                         } else {
                             setText("");
                         }

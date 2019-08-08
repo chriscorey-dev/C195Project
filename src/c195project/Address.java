@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class Address {
 
     private int addressId;
-
     private final String address;
     private final String address2;
     private final int cityId;
@@ -37,6 +36,10 @@ public class Address {
         this.cityId = cityId;
         this.postalCode = postalCode;
         this.phone = phone;
+    }
+    
+    public int getAddressId() {
+        return addressId;
     }
 
     public String getAddress() {
