@@ -311,9 +311,33 @@ public class SQLQueries {
         }
     }
     
-    public static void updateCustomer(Customer customer) {
-        System.out.println("name: " + customer.getCustomerName());
+    public static void updateAppointment(Appointment appointment) {
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            
+            Date start = appointment.getStart();
+            Date end = appointment.getEnd();
+            
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            
+            String startString = format.format(start);
+            String endString = format.format(end);
+            
+//            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+startString+"', DATETIME), CONVERT('"+endString+"', DATETIME), NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            
+            String query = "UPDATE appointment SET customerId = "+appointment.getCustomerId()+", userId = "+appointment.getUserId()+", title = '"+appointment.getTitle()+"', description = '"+appointment.getDescription()+"', location = '"+appointment.getLocation()+"', contact = '"+appointment.getContact()+"', type = '"+appointment.getType()+"', url = '"+appointment.getUrl()+"', start = CONVERT('"+startString+"', DATETIME), end = CONVERT('"+endString+"', DATETIME), lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE appointmentId = "+appointment.getAppointmentId()+";";
+            System.out.println("Query: " + query);
+            
+            int result = statement.executeUpdate(query);
         
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public static void updateCustomer(Customer customer) {
         try {
             Statement statement = (Statement) conn.createStatement();
             
@@ -322,6 +346,8 @@ public class SQLQueries {
             String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE customerId = "+customer.getCustomerId()+";";
             
             int result = statement.executeUpdate(query);
+            
+            System.out.println("Result: " + result);
         
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -332,10 +358,7 @@ public class SQLQueries {
         try {
             Statement statement = (Statement) conn.createStatement();
             
-            
-            // UPDATE customer SET customerName = 'Corn Co.' WHERE customerId = 3;
             String query = "UPDATE address SET address = '"+address.getAddress()+"', address2 = '"+address.getAddress2()+"', cityID = "+address.getCityId()+", postalCode = '"+address.getPostalCode()+"', phone = '"+address.getPhone()+"', lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE addressId = "+address.getAddressId()+";";
-//            String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = "+C195Project.getLoggedInUser().getUsername()+"' WHERE customerId = "+customer.getCustomerId()+";";
             
             int result = statement.executeUpdate(query);
         

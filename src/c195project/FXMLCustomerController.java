@@ -8,6 +8,7 @@ package c195project;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -29,9 +32,7 @@ import javafx.util.Callback;
  *
  * @author chris
  */
-public class FXMLCustomerController implements Initializable {
-//    boolean isEditing = false;
-    
+public class FXMLCustomerController implements Initializable { 
     @FXML private TextField name;
     @FXML private TextField address1;
     @FXML private TextField address2;
@@ -100,8 +101,15 @@ public class FXMLCustomerController implements Initializable {
     
     @FXML
     private void cancelCustomerHandle(ActionEvent event) throws IOException {
-        // TODO: Confirmation dialog
-        SceneManager.loadScene(SceneManager.MAIN_FXML);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Cancel Customer");
+        alert.setContentText("Are you sure you want discard changes?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            SceneManager.loadScene(SceneManager.MAIN_FXML);
+        }
     }
     
     @Override

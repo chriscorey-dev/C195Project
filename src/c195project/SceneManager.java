@@ -20,6 +20,10 @@ public class SceneManager {
     public static final String APPOINTMENT_FXML = "FXMLAppointment.fxml";
     public static final String CUSTOMER_FXML = "FXMLCustomer.fxml";
     
+    public static Stage getStage() {
+        return stage;
+    }
+    
     public SceneManager(Stage stage) {
         try {
             

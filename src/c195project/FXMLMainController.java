@@ -58,14 +58,24 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     private void editAppointmentHandler(ActionEvent event) throws IOException {
-//        SceneManager.loadScene(SceneManager.APPOINTMENT_FXML);
+        Appointment selectedAppointment = appointmentsListView.getSelectionModel().getSelectedItem();
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAppointment.fxml"));
+        Parent root = loader.load();
+        
+        FXMLAppointmentController appointmentController = loader.getController();
+        appointmentController.loadAppointment(selectedAppointment);
+        
+//        Stage stage = new Stage();
+        Stage stage = SceneManager.getStage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
     
     @FXML
     private void editCustomerHandler(ActionEvent event) throws IOException {
-//        SceneManager.loadScene(SceneManager.CUSTOMER_FXML);
         Customer selectedCustomer = customersListView.getSelectionModel().getSelectedItem();
-        System.out.println("Customer name: " + selectedCustomer.getCustomerName());
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCustomer.fxml"));
         Parent root = loader.load();
@@ -73,7 +83,8 @@ public class FXMLMainController implements Initializable {
         FXMLCustomerController customerController = loader.getController();
         customerController.loadCustomer(selectedCustomer);
         
-        Stage stage = new Stage();
+//        Stage stage = new Stage();
+        Stage stage = SceneManager.getStage();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();

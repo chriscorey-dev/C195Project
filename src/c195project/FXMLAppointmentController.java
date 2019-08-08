@@ -10,8 +10,10 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -52,6 +57,8 @@ public class FXMLAppointmentController implements Initializable {
     @FXML private ChoiceBox startTimeChoiceBox;
     @FXML private ChoiceBox endTimeChoiceBox;
     
+    @FXML private Button submitAppointmentButton;
+    
     @FXML
     private void submitAppointmentHandle(ActionEvent event) throws IOException, ParseException {
         // TODO: Validate
@@ -75,10 +82,10 @@ public class FXMLAppointmentController implements Initializable {
 //            Date start = format.parse(date.getValue()+" "+startTime.getText());
 //            Date end = format.parse(date.getValue()+" "+endTime.getText());
             Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
-            Date end = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
+            Date end = format.parse(date.getValue()+" "+endTimeChoiceBox.getValue()+":00");
             
-            System.out.println("Start string: " + date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
-            System.out.println("Start date: " + start.toString());
+//            System.out.println("Start string: " + date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
+//            System.out.println("Start date: " + start.toString());
             
             // TODO: Check if start < end
             
@@ -102,10 +109,37 @@ public class FXMLAppointmentController implements Initializable {
         }
     }
     
+    private void editAppointmentHandle(Appointment appointment) {
+        ArrayList<String> errors = Appointment.validate(appointment);
+        
+        if (errors.isEmpty()) {
+        
+            SQLQueries.updateAppointment(appointment);
+            try {
+                SceneManager.loadScene(SceneManager.MAIN_FXML);
+            } catch (Exception ex) {
+                System.out.println("Error: " + ex.getMessage());
+            }
+        } else {
+            String errorString = "";
+            for(String error : errors) {
+                errorString += error + "\n";
+            }
+            validation.setText(errorString);
+        }
+    }
+    
     @FXML
     private void cancelAppointmentHandle(ActionEvent event) throws IOException {
-        // TODO: Confirmation dialog
-        SceneManager.loadScene(SceneManager.MAIN_FXML);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Cancel Appointment");
+        alert.setContentText("Are you sure you want discard changes?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            SceneManager.loadScene(SceneManager.MAIN_FXML);
+        }
     }
     
     @Override
@@ -147,6 +181,44 @@ public class FXMLAppointmentController implements Initializable {
     }
     
     public void loadAppointment(Appointment appointment) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        submitAppointmentButton.setOnAction((arg0) -> {
+            try {
+                Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
+                Date end = format.parse(date.getValue()+" "+endTimeChoiceBox.getValue()+":00");
+//                public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url, Date start, Date end) {
+                Appointment updatedAppointment = new Appointment(appointment.getAppointmentId(), customers.getSelectionModel().getSelectedItem().getCustomerId(), appointment.getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
+                editAppointmentHandle(updatedAppointment);
+            } catch (Exception ex) {
+                System.out.println("Error: " + ex.getMessage());
+            }
+        });
+        
         title.setText(appointment.getTitle());
+        description.setText(appointment.getDescription());
+        location.setText(appointment.getLocation());
+        contact.setText(appointment.getContact());
+        type.setText(appointment.getType());
+        url.setText(appointment.getUrl());
+        
+        Date mDate = appointment.getStart();
+        LocalDate localDate = mDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        date.setValue(localDate);
+        
+        String[] startTimeString = format.format(appointment.getStart()).split(" ")[1].split(":");
+        String startString = startTimeString[0]+":"+startTimeString[1];
+        String[] endTimeString = format.format(appointment.getEnd()).split(" ")[1].split(":");
+        String endString = endTimeString[0]+":"+endTimeString[1];
+        
+        startTimeChoiceBox.setValue(startString);
+        endTimeChoiceBox.setValue(endString);
+        
+        ObservableList<Customer> customersList = customers.getItems();
+        for (Customer customer : customersList) {
+            if (customer.getCustomerId()== appointment.getCustomerId()) {
+                customers.getSelectionModel().select(customer);
+                break;
+            }
+        }
     }
 }
