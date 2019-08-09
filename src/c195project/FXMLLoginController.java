@@ -5,23 +5,14 @@
  */
 package c195project;
 
-import static c195project.C195Project.conn;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,7 +40,7 @@ public class FXMLLoginController implements Initializable {
     private Label errorLabel;
     
     @FXML
-    private void loginAction(ActionEvent event) {
+    private void loginAction(ActionEvent event) throws IOException {
         
         ResultSet result = SQLQueries.checkLoginCredentials(usernameField.getText(), passwordField.getText());
             
@@ -62,6 +53,14 @@ public class FXMLLoginController implements Initializable {
                 User loggedInUser = new User(result.getInt("userId"), result.getString("username"));
                 C195Project.setLoggedInUser(loggedInUser);
                 
+                // Log file
+                String file = "user_log.txt";
+                FileWriter fileWriter = new FileWriter(file, true);
+                PrintWriter outputFile = new PrintWriter(fileWriter);
+                outputFile.println(loggedInUser.getUsername() + " logged in at " + Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTimeInMillis());
+                outputFile.close();
+                
+                // Checks for impending appointments
                 if (SQLQueries.getUsersAppointments15Minutes()) {
                     Alert alert = new Alert(AlertType.INFORMATION);
                     alert.setTitle("Alert");
