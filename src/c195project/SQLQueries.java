@@ -128,6 +128,23 @@ public class SQLQueries {
         return appointments;
     }
     
+    public static boolean getUsersAppointments15Minutes() {
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            String query = "SELECT * FROM appointment WHERE userId = "+C195Project.getLoggedInUser().getUserId()+" AND start BETWEEN NOW() AND NOW() + INTERVAL 15 MINUTE;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            return result.next();
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return false;
+    }
+    
     // TODO: handle active field elsewhere
     public static ArrayList<Customer> getAllActiveCustomers() {
             

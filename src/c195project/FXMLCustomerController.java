@@ -141,6 +141,7 @@ public class FXMLCustomerController implements Initializable {
     public void loadCustomer(Customer customer) {
         Address address = SQLQueries.getAddressById(customer.getAddressId());
         
+        // Lambda expression: Sets on action for submit button to change when editing instead of adding new customer.
         submitCustomerButton.setOnAction((arg0) -> {
             Customer updatedCustomer = new Customer(customer.getCustomerId(), name.getText(), customer.getAddressId(), active.isSelected() ? 1 : 0);
             Address updatedAddress = new Address(customer.getAddressId(), address1.getText(), address2.getText(), cityListView.getSelectionModel().getSelectedItem().getCityId(), postalCode.getText(), phone.getText());

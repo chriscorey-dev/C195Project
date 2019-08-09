@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -59,6 +61,15 @@ public class FXMLLoginController implements Initializable {
                 
                 User loggedInUser = new User(result.getInt("userId"), result.getString("username"));
                 C195Project.setLoggedInUser(loggedInUser);
+                
+                if (SQLQueries.getUsersAppointments15Minutes()) {
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Alert");
+                    alert.setHeaderText(null);
+                    alert.setContentText("You have a meeting within 15 minutes!");
+
+                    alert.show();
+                }
                 
                 SceneManager.loadScene(SceneManager.MAIN_FXML);
             } else {

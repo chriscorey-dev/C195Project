@@ -182,6 +182,7 @@ public class FXMLAppointmentController implements Initializable {
     
     public void loadAppointment(Appointment appointment) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // Lambda expression: Sets on action for submit button to change when editing instead of adding new appointment.
         submitAppointmentButton.setOnAction((arg0) -> {
             try {
                 Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");

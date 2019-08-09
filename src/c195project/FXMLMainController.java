@@ -143,6 +143,7 @@ public class FXMLMainController implements Initializable {
         ObservableList<String> list = FXCollections.observableArrayList(new String[]{"Single Day", "7 days", "30 days"});
         appViewType.setItems(list);
         appViewType.getSelectionModel().selectFirst();
+        // Lambda expression: Listens for ChoiceBox value change and pulls appointments appropriately
         appViewType.getSelectionModel().selectedItemProperty().addListener((item, oldValue, newValue) -> {
             datePicker.setDisable(newValue != "Single Day");
             if (newValue == "Single Day") {
