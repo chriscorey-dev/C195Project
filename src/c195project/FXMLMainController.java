@@ -23,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -45,6 +46,8 @@ public class FXMLMainController implements Initializable {
     @FXML private ListView<Appointment> appointmentsListView;
     @FXML private ListView<Customer> customersListView;
     @FXML private DatePicker datePicker;
+    
+    @FXML private ChoiceBox appViewType;
     
     @FXML
     private void addAppointmentHandler(ActionEvent event) throws IOException {
@@ -104,7 +107,7 @@ public class FXMLMainController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
             SQLQueries.deleteAppointmentById(appointment.getAppointmentId());
-            updateAppointments();
+            updateAppointments(null);
         }
     }
     
@@ -121,28 +124,53 @@ public class FXMLMainController implements Initializable {
             SQLQueries.deleteAppointmentsByCustomerId(customer.getCustomerId());
             SQLQueries.deleteCustomerById(customer.getCustomerId());
             SQLQueries.deleteAddressById(customer.getAddressId());
-            updateAppointments();
+            updateAppointments(null);
             updateCustomers();
         }
     }
     
     @FXML
     private void selectedDateHandler(ActionEvent event) {
-        updateAppointments();
+        updateAppointments(null);
     }
+    
+    
             
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         datePicker.setValue(LocalDate.now());
         
-        updateAppointments();
+        ObservableList<String> list = FXCollections.observableArrayList(new String[]{"Single Day", "7 days", "30 days"});
+        appViewType.setItems(list);
+        appViewType.getSelectionModel().selectFirst();
+        appViewType.getSelectionModel().selectedItemProperty().addListener((item, oldValue, newValue) -> {
+            datePicker.setDisable(newValue != "Single Day");
+            if (newValue == "Single Day") {
+                updateAppointments(null);
+            } else if (newValue == "7 days") {
+                updateAppointments(SQLQueries.getUsersAppointments7Days());
+            } else if (newValue == "30 days") {
+                updateAppointments(SQLQueries.getUsersAppointments30Days());
+            }
+        });
+
+
+        
+        
+        updateAppointments(null);
         updateCustomers();
     }
     
-    private void updateAppointments() {
-        ArrayList<Appointment> customerList = SQLQueries.getUsersApponitmentsOnDate(datePicker.getValue());
+    private void updateAppointments(ArrayList<Appointment> appointmentListDefault) {
+        ArrayList<Appointment> appointmentList;
+        
+        if (appointmentListDefault == null) {
+            appointmentList = SQLQueries.getUsersAppointmentsOnDate(datePicker.getValue());
+        } else {
+            appointmentList = appointmentListDefault;
+        }
 
-        ObservableList<Appointment> list = FXCollections.observableArrayList(customerList);
+        ObservableList<Appointment> list = FXCollections.observableArrayList(appointmentList);
         appointmentsListView.setCellFactory(new Callback<ListView<Appointment>, ListCell<Appointment>>() {
 
             @Override
