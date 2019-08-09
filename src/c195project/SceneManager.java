@@ -59,11 +59,11 @@ public class SceneManager {
               break;
             case APPOINTMENT_FXML:
 //                scene = allScenes.get(2);
-                stage.setTitle("Appointment");
+                stage.setTitle("Add Appointment");
               break;
             case CUSTOMER_FXML:
 //                scene = allScenes.get(3);
-                stage.setTitle("Customer");
+                stage.setTitle("Add Customer");
               break;
             default:
                 System.out.println("Invalid string");

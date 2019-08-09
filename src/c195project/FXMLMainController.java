@@ -71,6 +71,7 @@ public class FXMLMainController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+        stage.setTitle("Edit Appointment");
     }
     
     @FXML
@@ -88,6 +89,7 @@ public class FXMLMainController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+        stage.setTitle("Edit Customer");
     }
     
     @FXML
@@ -116,7 +118,7 @@ public class FXMLMainController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            SQLQueries.deleteAppointmentByCustomerId(customer.getCustomerId());
+            SQLQueries.deleteAppointmentsByCustomerId(customer.getCustomerId());
             SQLQueries.deleteCustomerById(customer.getCustomerId());
             SQLQueries.deleteAddressById(customer.getAddressId());
             updateAppointments();

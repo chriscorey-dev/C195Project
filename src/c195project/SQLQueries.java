@@ -285,7 +285,7 @@ public class SQLQueries {
         }
     }
     
-    public static void deleteAppointmentByCustomerId(int customerId) {
+    public static void deleteAppointmentsByCustomerId(int customerId) {
         try {
             Statement statement = (Statement) conn.createStatement();
             
@@ -325,10 +325,7 @@ public class SQLQueries {
             String startString = format.format(start);
             String endString = format.format(end);
             
-//            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+startString+"', DATETIME), CONVERT('"+endString+"', DATETIME), NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
-            
             String query = "UPDATE appointment SET customerId = "+appointment.getCustomerId()+", userId = "+appointment.getUserId()+", title = '"+appointment.getTitle()+"', description = '"+appointment.getDescription()+"', location = '"+appointment.getLocation()+"', contact = '"+appointment.getContact()+"', type = '"+appointment.getType()+"', url = '"+appointment.getUrl()+"', start = CONVERT('"+startString+"', DATETIME), end = CONVERT('"+endString+"', DATETIME), lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE appointmentId = "+appointment.getAppointmentId()+";";
-            System.out.println("Query: " + query);
             
             int result = statement.executeUpdate(query);
         
@@ -346,8 +343,6 @@ public class SQLQueries {
             String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE customerId = "+customer.getCustomerId()+";";
             
             int result = statement.executeUpdate(query);
-            
-            System.out.println("Result: " + result);
         
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
