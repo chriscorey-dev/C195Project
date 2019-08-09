@@ -6,6 +6,7 @@
 package c195project;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -173,6 +174,9 @@ public class Appointment {
         if (appointment.getUrl().isEmpty()) {
             errors.add("Url field is required");
         }
+        if (hasOverlappingUsersAppointments(appointment)) {
+            errors.add("Has overlapping appointments");
+        }
 //        if (appointment.getStart() == null) {
 //            errors.add("Start Time is required");
 //        }
@@ -195,5 +199,15 @@ public class Appointment {
 ////        }
         
         return errors;
+    }
+    
+    public static boolean hasOverlappingUsersAppointments(Appointment appointment) {
+        ArrayList<Appointment> appointmentsOnDate = new ArrayList<>(SQLQueries.getUsersAppointmentsOnDate(appointment.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+        for (Appointment app : appointmentsOnDate) {
+            if (appointment.getStart().before(app.getEnd()) && appointment.getEnd().after(app.getStart())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
