@@ -46,6 +46,11 @@ public class FXMLCustomerController implements Initializable {
     
     @FXML
     private void submitCustomerHandle(ActionEvent event) throws IOException {
+        City city = cityListView.getSelectionModel().getSelectedItem();
+        if (city == null) {
+            validation.setText("Pick a city");
+            return;
+        }
         
         Address address = new Address(address1.getText(), address2.getText(), cityListView.getSelectionModel().getSelectedItem().getCityId(), postalCode.getText(), phone.getText());
         ArrayList<String> addressErrors = Address.validate(address);

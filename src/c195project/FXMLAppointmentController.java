@@ -74,30 +74,19 @@ public class FXMLAppointmentController implements Initializable {
             validation.setText("Pick a consultant");
             return;
         }
-//        Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), date.getValue(), startTime.getText(), endTime.getText());
-
-
-        // TODO: Time pattern validation here
-//        if (startTime.getText().isEmpty() || endTime.getText().isEmpty()) {
-//            validation.setText(":c");
-//            return;
-//        }
+        if (startTimeChoiceBox.getValue() == null || endTimeChoiceBox.getValue() == null) {
+            validation.setText("Pick a start and end time");
+            return;
+        }
+        if (date.getValue() == null) {
+            validation.setText("Pick a date");
+            return;
+        }
         
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            Date start = format.parse(date.getValue()+" "+startTime.getText());
-//            Date end = format.parse(date.getValue()+" "+endTime.getText());
             Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
             Date end = format.parse(date.getValue()+" "+endTimeChoiceBox.getValue()+":00");
-            
-//            System.out.println("Start string: " + date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
-//            System.out.println("Start date: " + start.toString());
-            
-            // TODO: Check if start < end
-            
-//            System.out.println("start: " + format.format(start));
-            // startTimeChoiceBox
-//            Appointment appointment = new Appointment(customer.getCustomerId(), C195Project.getLoggedInUser().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
             Appointment appointment = new Appointment(customer.getCustomerId(), user.getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
             ArrayList<String> errors = Appointment.validate(appointment);
 

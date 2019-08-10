@@ -75,6 +75,34 @@ public class SQLQueries {
         return appointments;
     }
     
+    /// Queries logged in user's appointment on DatePicker's selected date
+    public static ArrayList<Appointment> getUsersAppointmentsOnDate(LocalDate date, int userId) {
+        ArrayList<Appointment> appointments = new ArrayList<>();
+        
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            String query = "SELECT * FROM appointment WHERE userId = "+userId+" AND CONVERT(start, DATE) = CONVERT('"+date.toString()+"', DATE);";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            
+            while (result.next()) {
+                Date start = format.parse(result.getString("start"));
+                Date end = format.parse(result.getString("end"));
+                Appointment appointment = new Appointment(result.getInt("appointmentId"), result.getInt("customerId"), result.getInt("userId"), result.getString("title"), result.getString("description"), result.getString("location"), result.getString("contact"), result.getString("type"), result.getString("url"), start, end);
+                appointments.add(appointment);
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return appointments;
+    }
+    
     public static ArrayList<Appointment> getAllAppointments7Days() {
         ArrayList<Appointment> appointments = new ArrayList<>();
         

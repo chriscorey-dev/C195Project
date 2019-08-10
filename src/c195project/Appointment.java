@@ -5,6 +5,7 @@
  */
 package c195project;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -26,48 +27,9 @@ public class Appointment {
     private final String contact;
     private final String type;
     private final String url;
-    private final LocalDate date;
-//    private final String startTime;
-//    private final String endTime;
     
     private final Date start;
     private final Date end;
-    
-//    public Appointment(int customerId, int userId, String title, String description, String location, String contact, String type, String url, LocalDate date, String startTime, String endTime) {
-//        this.appointmentId = -1;
-//        this.customerId = customerId;
-//        this.userId = userId;
-//        this.title = title;
-//        this.description = description;
-//        this.location = location;
-//        this.contact = contact;
-//        this.type = type;
-//        this.url = url;
-//        this.date = date;
-//        this.startTime = startTime;
-//        this.endTime = endTime;
-//        
-//        this.start = null;
-//        this.end = null;
-//    }
-//    
-//    public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url, LocalDate date, String startTime, String endTime) {
-//        this.appointmentId = appointmentId;
-//        this.customerId = customerId;
-//        this.userId = userId;
-//        this.title = title;
-//        this.description = description;
-//        this.location = location;
-//        this.contact = contact;
-//        this.type = type;
-//        this.url = url;
-//        this.date = date;
-//        this.startTime = startTime;
-//        this.endTime = endTime;
-//        
-//        this.start = null;
-//        this.end = null;
-//    }
     
     public Appointment(int customerId, int userId, String title, String description, String location, String contact, String type, String url, Date start, Date end) {
         this.appointmentId = -1;
@@ -81,10 +43,6 @@ public class Appointment {
         this.url = url;
         this.start = start;
         this.end = end;
-        
-        this.date = null;
-//        this.startTime = null;
-//        this.endTime = null;
     }
     
     public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url, Date start, Date end) {
@@ -99,10 +57,6 @@ public class Appointment {
         this.url = url;
         this.start = start;
         this.end = end;
-        
-        this.date = null;
-//        this.startTime = null;
-//        this.endTime = null;
     }
 
     public int getCustomerId() {
@@ -141,10 +95,6 @@ public class Appointment {
         return url;
     }
 
-//    public LocalDate getDate() {
-//        return date;
-//    }
-
     public Date getStart() {
         return start;
     }
@@ -177,14 +127,20 @@ public class Appointment {
         if (hasOverlappingUsersAppointments(appointment)) {
             errors.add("Has overlapping appointments");
         }
+        if (appointment.getStart().after(appointment.getEnd())) {
+            errors.add("Start time must be before end time");
+        }
+        if (appointment.getStart().before(Date.from(Instant.now()))) {
+            errors.add("Meeting can't be in the past");
+        }
         
         return errors;
     }
     
     private static boolean hasOverlappingUsersAppointments(Appointment appointment) {
-        ArrayList<Appointment> appointmentsOnDate = new ArrayList<>(SQLQueries.getAllAppointmentsOnDate(appointment.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+        ArrayList<Appointment> appointmentsOnDate = new ArrayList<>(SQLQueries.getUsersAppointmentsOnDate(appointment.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), appointment.getUserId()));
         for (Appointment app : appointmentsOnDate) {
-            if (appointment.getStart().before(app.getEnd()) && appointment.getEnd().after(app.getStart())) {
+            if (appointment.getStart().before(app.getEnd()) && appointment.getEnd().after(app.getStart()) && appointment.getAppointmentId() != app.getAppointmentId()) {
                 return true;
             }
         }
