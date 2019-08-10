@@ -42,13 +42,14 @@ public class SQLQueries {
     }
     
     /// Queries logged in user's appointment on DatePicker's selected date
-    public static ArrayList<Appointment> getUsersAppointmentsOnDate(LocalDate date) {
+    public static ArrayList<Appointment> getAllAppointmentsOnDate(LocalDate date) {
         ArrayList<Appointment> appointments = new ArrayList<>();
         
         try {
             
             Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM appointment WHERE userId = "+C195Project.getLoggedInUser().getUserId()+" AND CONVERT(start, DATE) = CONVERT('"+date.toString()+"', DATE);";
+//            String query = "SELECT * FROM appointment WHERE userId = "+C195Project.getLoggedInUser().getUserId()+" AND CONVERT(start, DATE) = CONVERT('"+date.toString()+"', DATE);";
+            String query = "SELECT * FROM appointment WHERE CONVERT(start, DATE) = CONVERT('"+date.toString()+"', DATE);";
             
             ResultSet result = statement.executeQuery(query);
             
@@ -74,13 +75,13 @@ public class SQLQueries {
         return appointments;
     }
     
-    public static ArrayList<Appointment> getUsersAppointments7Days() {
+    public static ArrayList<Appointment> getAllAppointments7Days() {
         ArrayList<Appointment> appointments = new ArrayList<>();
         
         try {
             
             Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM appointment WHERE userId = "+C195Project.getLoggedInUser().getUserId()+" AND start BETWEEN NOW() AND NOW() + INTERVAL 1 WEEK + INTERVAL 1 DAY;";
+            String query = "SELECT * FROM appointment WHERE start BETWEEN NOW() AND NOW() + INTERVAL 1 WEEK + INTERVAL 1 DAY;";
             
             ResultSet result = statement.executeQuery(query);
             
@@ -101,13 +102,13 @@ public class SQLQueries {
         return appointments;
     }
     
-    public static ArrayList<Appointment> getUsersAppointments30Days() {
+    public static ArrayList<Appointment> getAllAppointments30Days() {
         ArrayList<Appointment> appointments = new ArrayList<>();
         
         try {
             
             Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM appointment WHERE userId = "+C195Project.getLoggedInUser().getUserId()+" AND start BETWEEN NOW() AND NOW() + INTERVAL 1 MONTH + INTERVAL 1 DAY;";
+            String query = "SELECT * FROM appointment WHERE start BETWEEN NOW() AND NOW() + INTERVAL 1 MONTH + INTERVAL 1 DAY;";
             
             ResultSet result = statement.executeQuery(query);
             
@@ -132,7 +133,7 @@ public class SQLQueries {
         try {
             
             Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM appointment WHERE userId = "+C195Project.getLoggedInUser().getUserId()+" AND start BETWEEN NOW() AND NOW() + INTERVAL 15 MINUTE;";
+            String query = "SELECT * FROM appointment WHERE start BETWEEN NOW() AND NOW() + INTERVAL 15 MINUTE;";
             
             ResultSet result = statement.executeQuery(query);
             
@@ -168,6 +169,30 @@ public class SQLQueries {
         }
         
         return customers;
+    }
+    
+    public static ArrayList<User> getAllActiveUsers() {
+            
+        ArrayList<User> users = new ArrayList<>();
+        
+        try {
+            
+            Statement statement = (Statement) conn.createStatement();
+            String query = "SELECT * FROM user WHERE active = 1;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+//                customers.add(result.getString("customerName"));
+                User user = new User(result.getInt("userId"), result.getString("userName"));
+                users.add(user);
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return users;
     }
     
     public static ArrayList<Customer> getAllCustomers() {
@@ -293,7 +318,7 @@ public class SQLQueries {
             String startString = format.format(start);
             String endString = format.format(end);
             
-            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+startString+"', DATETIME), CONVERT('"+endString+"', DATETIME), NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            String query = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy) VALUES ("+appointment.getCustomerId()+", "+appointment.getUserId()+", '"+appointment.getTitle()+"', '"+appointment.getDescription()+"', '"+appointment.getLocation()+"', '"+appointment.getContact()+"', '"+appointment.getType()+"', '"+appointment.getUrl()+"', CONVERT('"+startString+"', DATETIME), CONVERT('"+endString+"', DATETIME), NOW(), '"+C195Project.getLoggedInUser().getUserName()+"', '"+C195Project.getLoggedInUser().getUserName()+"');";
             
             int result = statement.executeUpdate(query);
         
@@ -306,7 +331,7 @@ public class SQLQueries {
         try {
             Statement statement = (Statement) conn.createStatement();
             
-            String query = "INSERT INTO address(address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('"+address.getAddress()+"', '"+address.getAddress2()+"', "+address.getCityId()+", '"+address.getPostalCode()+"', '"+address.getPhone()+"', NOW(), '"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            String query = "INSERT INTO address(address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('"+address.getAddress()+"', '"+address.getAddress2()+"', "+address.getCityId()+", '"+address.getPostalCode()+"', '"+address.getPhone()+"', NOW(), '"+C195Project.getLoggedInUser().getUserName()+"', '"+C195Project.getLoggedInUser().getUserName()+"');";
             
             int result = statement.executeUpdate(query);
         
@@ -319,7 +344,7 @@ public class SQLQueries {
         try {
             Statement statement = (Statement) conn.createStatement();
             
-            String query = "INSERT INTO customer(customerName, addressId, active, createDate, createdBy, lastUpdateBy) VALUES ('"+customer.getCustomerName()+"', "+customer.getAddressId()+", "+customer.getActive()+", NOW(),'"+C195Project.getLoggedInUser().getUsername()+"', '"+C195Project.getLoggedInUser().getUsername()+"');";
+            String query = "INSERT INTO customer(customerName, addressId, active, createDate, createdBy, lastUpdateBy) VALUES ('"+customer.getCustomerName()+"', "+customer.getAddressId()+", "+customer.getActive()+", NOW(),'"+C195Project.getLoggedInUser().getUserName()+"', '"+C195Project.getLoggedInUser().getUserName()+"');";
             
             int result = statement.executeUpdate(query);
         
@@ -396,7 +421,7 @@ public class SQLQueries {
             String startString = format.format(start);
             String endString = format.format(end);
             
-            String query = "UPDATE appointment SET customerId = "+appointment.getCustomerId()+", userId = "+appointment.getUserId()+", title = '"+appointment.getTitle()+"', description = '"+appointment.getDescription()+"', location = '"+appointment.getLocation()+"', contact = '"+appointment.getContact()+"', type = '"+appointment.getType()+"', url = '"+appointment.getUrl()+"', start = CONVERT('"+startString+"', DATETIME), end = CONVERT('"+endString+"', DATETIME), lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE appointmentId = "+appointment.getAppointmentId()+";";
+            String query = "UPDATE appointment SET customerId = "+appointment.getCustomerId()+", userId = "+appointment.getUserId()+", title = '"+appointment.getTitle()+"', description = '"+appointment.getDescription()+"', location = '"+appointment.getLocation()+"', contact = '"+appointment.getContact()+"', type = '"+appointment.getType()+"', url = '"+appointment.getUrl()+"', start = CONVERT('"+startString+"', DATETIME), end = CONVERT('"+endString+"', DATETIME), lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUserName()+"' WHERE appointmentId = "+appointment.getAppointmentId()+";";
             
             int result = statement.executeUpdate(query);
         
@@ -411,7 +436,7 @@ public class SQLQueries {
             
             
             // UPDATE customer SET customerName = 'Corn Co.' WHERE customerId = 3;
-            String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE customerId = "+customer.getCustomerId()+";";
+            String query = "UPDATE customer SET customerName = '"+customer.getCustomerName()+"', active = "+customer.getActive()+", lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUserName()+"' WHERE customerId = "+customer.getCustomerId()+";";
             
             int result = statement.executeUpdate(query);
         
@@ -424,7 +449,7 @@ public class SQLQueries {
         try {
             Statement statement = (Statement) conn.createStatement();
             
-            String query = "UPDATE address SET address = '"+address.getAddress()+"', address2 = '"+address.getAddress2()+"', cityID = "+address.getCityId()+", postalCode = '"+address.getPostalCode()+"', phone = '"+address.getPhone()+"', lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUsername()+"' WHERE addressId = "+address.getAddressId()+";";
+            String query = "UPDATE address SET address = '"+address.getAddress()+"', address2 = '"+address.getAddress2()+"', cityID = "+address.getCityId()+", postalCode = '"+address.getPostalCode()+"', phone = '"+address.getPhone()+"', lastUpdate = NOW(), lastUpdateBy = '"+C195Project.getLoggedInUser().getUserName()+"' WHERE addressId = "+address.getAddressId()+";";
             
             int result = statement.executeUpdate(query);
         

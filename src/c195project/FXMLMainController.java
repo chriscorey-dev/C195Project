@@ -149,9 +149,9 @@ public class FXMLMainController implements Initializable {
             if (newValue == "Single Day") {
                 updateAppointments(null);
             } else if (newValue == "7 days") {
-                updateAppointments(SQLQueries.getUsersAppointments7Days());
+                updateAppointments(SQLQueries.getAllAppointments7Days());
             } else if (newValue == "30 days") {
-                updateAppointments(SQLQueries.getUsersAppointments30Days());
+                updateAppointments(SQLQueries.getAllAppointments30Days());
             }
         });
 
@@ -166,7 +166,7 @@ public class FXMLMainController implements Initializable {
         ArrayList<Appointment> appointmentList;
         
         if (appointmentListDefault == null) {
-            appointmentList = SQLQueries.getUsersAppointmentsOnDate(datePicker.getValue());
+            appointmentList = SQLQueries.getAllAppointmentsOnDate(datePicker.getValue());
         } else {
             appointmentList = appointmentListDefault;
         }

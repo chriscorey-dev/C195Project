@@ -177,32 +177,12 @@ public class Appointment {
         if (hasOverlappingUsersAppointments(appointment)) {
             errors.add("Has overlapping appointments");
         }
-//        if (appointment.getStart() == null) {
-//            errors.add("Start Time is required");
-//        }
-//        if (appointment.getEnd() == null) {
-//            errors.add("End Time is required");
-//        }
-        
-//        String timePattern = "\\d{2}:\\d{2}:\\d{2}";
-////        String timePattern = "\\d{2}[0-23]:\\d{2}[0-59]:\\d{2}[0-59]";
-////        String timePattern = "\\d[0-2]{2}:\\d{2}:\\d{2}";
-////        String timePatter = "^()$";
-////        Time startTime = new Time(appointment.getStartTime().split(":")[0]);
-////        Time endTime = new Time(1,1,1);
-//        if (!appointment.getStartTime().matches(timePattern)) {
-//            errors.add("Start Time format must be '##:##:##'");
-//        } else if (!appointment.getEndTime().matches(timePattern)) {
-//            errors.add("End Time format must be '##:##:##'");}
-////        } else if (startTime.after(endTime)) {
-////            errors.add("Start Time must be before End Time");
-////        }
         
         return errors;
     }
     
-    public static boolean hasOverlappingUsersAppointments(Appointment appointment) {
-        ArrayList<Appointment> appointmentsOnDate = new ArrayList<>(SQLQueries.getUsersAppointmentsOnDate(appointment.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+    private static boolean hasOverlappingUsersAppointments(Appointment appointment) {
+        ArrayList<Appointment> appointmentsOnDate = new ArrayList<>(SQLQueries.getAllAppointmentsOnDate(appointment.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
         for (Appointment app : appointmentsOnDate) {
             if (appointment.getStart().before(app.getEnd()) && appointment.getEnd().after(app.getStart())) {
                 return true;

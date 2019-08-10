@@ -54,10 +54,16 @@
             </HBox>
          </children>
       </VBox>
-      <VBox layoutX="452.0" layoutY="61.0" prefHeight="288.0" prefWidth="195.0">
+      <VBox layoutX="452.0" layoutY="61.0" prefHeight="288.0" prefWidth="135.0">
          <children>
             <Label text="Customer" />
             <ListView fx:id="customers" prefHeight="289.0" prefWidth="195.0" />
+         </children>
+      </VBox>
+      <VBox layoutX="596.0" layoutY="61.0" prefHeight="288.0" prefWidth="135.0">
+         <children>
+            <Label text="Consultant" />
+            <ListView fx:id="users" prefHeight="289.0" prefWidth="195.0" />
          </children>
       </VBox>
    </children>

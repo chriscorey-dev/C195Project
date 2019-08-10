@@ -57,7 +57,7 @@ public class FXMLLoginController implements Initializable {
                 String file = "user_log.txt";
                 FileWriter fileWriter = new FileWriter(file, true);
                 PrintWriter outputFile = new PrintWriter(fileWriter);
-                outputFile.println(loggedInUser.getUsername() + " logged in at " + Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTimeInMillis());
+                outputFile.println(loggedInUser.getUserName() + " logged in at " + Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTimeInMillis());
                 outputFile.close();
                 
                 // Checks for impending appointments

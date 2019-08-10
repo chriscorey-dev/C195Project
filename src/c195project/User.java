@@ -23,7 +23,7 @@ public class User {
         return userId;
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return username;
     }
 }
