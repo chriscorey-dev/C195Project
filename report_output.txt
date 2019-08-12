@@ -1,0 +1,11 @@
+Month | In Person
+February | 1
+August | 8
+September | 4
+
+Month | Online
+January | 1
+August | 1
+
+Month | Phone
+September | 1

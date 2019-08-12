@@ -27,7 +27,7 @@
             <Label text="Contact" />
             <TextField fx:id="contact" prefHeight="25.0" prefWidth="130.0" />
             <Label text="Type" />
-            <TextField fx:id="type" prefHeight="25.0" prefWidth="130.0" />
+            <ChoiceBox fx:id="type" prefHeight="25.0" prefWidth="202.0" />
             <Label text="URL" />
             <TextField fx:id="url" prefHeight="25.0" prefWidth="130.0" />
          </children>

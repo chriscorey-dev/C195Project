@@ -5,12 +5,17 @@
  */
 package c195project;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,6 +53,58 @@ public class FXMLMainController implements Initializable {
     @FXML private DatePicker datePicker;
     
     @FXML private ChoiceBox appViewType;
+    
+    @FXML private ChoiceBox reportChoiceBox;
+    
+    @FXML
+    private void generateReport(ActionEvent event) throws IOException {
+        String file = "report_output.txt";
+        FileWriter fileWriter = new FileWriter(file, false); // False disables append
+        PrintWriter outputFile = new PrintWriter(fileWriter);
+        
+        switch(reportChoiceBox.getSelectionModel().getSelectedItem().toString()) {
+            case "Number of appointment types by month":
+                ArrayList<String> appointmentTypes = SQLQueries.getAppointmentTypes();
+                for (String type : appointmentTypes) {
+                    outputFile.println(type);
+                }
+                break;
+            case "The schedule for each consultant":
+                ArrayList<String> schedules = SQLQueries.getConsultantSchedule();
+                outputFile.println("UserName | Appointment Title | Start Time | End Time");
+                
+                for (String schedule : schedules) {
+                    outputFile.println(schedule);
+                }
+                break;
+            case "Number of customers in each city":
+                ArrayList<String> counts = SQLQueries.getCustomersCountInCity();
+                outputFile.println("City | occurrances");
+                
+                for (String count : counts) {
+                    outputFile.println(count);
+                }
+                break;
+            default:
+                break;
+        }
+        outputFile.close();
+        
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Alert");
+        alert.setHeaderText(null);
+        File f = new File(file);
+        alert.setContentText("Report generated at project root (" + f.getAbsoluteFile() + ")");
+        ButtonType okButton = new ButtonType("OK");
+        ButtonType openButton = new ButtonType("Open In Explorer");
+        alert.getButtonTypes().setAll(okButton, openButton);
+        
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        if (result.get() == openButton) {
+            Runtime.getRuntime().exec("explorer.exe /select," + f.getAbsolutePath());
+        }
+    }
     
     @FXML
     private void addAppointmentHandler(ActionEvent event) throws IOException {
@@ -154,12 +211,16 @@ public class FXMLMainController implements Initializable {
                 updateAppointments(SQLQueries.getAllAppointments30Days());
             }
         });
-
-
-        
         
         updateAppointments(null);
         updateCustomers();
+        
+        
+        
+        
+        ObservableList<String> reportList = FXCollections.observableArrayList(new String[]{"Number of appointment types by month", "The schedule for each consultant", "Number of customers in each city"});
+        reportChoiceBox.setItems(reportList);
+        reportChoiceBox.getSelectionModel().selectFirst();
     }
     
     private void updateAppointments(ArrayList<Appointment> appointmentListDefault) {

@@ -47,7 +47,7 @@ public class FXMLAppointmentController implements Initializable {
     @FXML private TextArea description;
     @FXML private TextField location;
     @FXML private TextField contact;
-    @FXML private TextField type;
+    @FXML private ChoiceBox type;
     @FXML private TextField url;
     @FXML private TextField startTime;
     @FXML private TextField endTime;
@@ -82,12 +82,16 @@ public class FXMLAppointmentController implements Initializable {
             validation.setText("Pick a date");
             return;
         }
+        if (type.getValue() == null) {
+            validation.setText("Pick a type");
+            return;
+        }
         
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
             Date end = format.parse(date.getValue()+" "+endTimeChoiceBox.getValue()+":00");
-            Appointment appointment = new Appointment(customer.getCustomerId(), user.getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
+            Appointment appointment = new Appointment(customer.getCustomerId(), user.getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getValue().toString(), url.getText(), start, end);
             ArrayList<String> errors = Appointment.validate(appointment);
 
             if (errors.isEmpty()) {
@@ -147,6 +151,9 @@ public class FXMLAppointmentController implements Initializable {
         ObservableList<String> times = FXCollections.observableArrayList(asdf);
         startTimeChoiceBox.setItems(times);
         endTimeChoiceBox.setItems(times);
+        
+        ObservableList<String> types = FXCollections.observableArrayList(new String[]{"In Person", "Phone", "Online"});
+        type.setItems(types);
 
         populateCustomers();
         populateUsers();
@@ -210,7 +217,7 @@ public class FXMLAppointmentController implements Initializable {
                 Date start = format.parse(date.getValue()+" "+startTimeChoiceBox.getValue()+":00");
                 Date end = format.parse(date.getValue()+" "+endTimeChoiceBox.getValue()+":00");
 //                public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url, Date start, Date end) {
-                Appointment updatedAppointment = new Appointment(appointment.getAppointmentId(), customers.getSelectionModel().getSelectedItem().getCustomerId(), users.getSelectionModel().getSelectedItem().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getText(), url.getText(), start, end);
+                Appointment updatedAppointment = new Appointment(appointment.getAppointmentId(), customers.getSelectionModel().getSelectedItem().getCustomerId(), users.getSelectionModel().getSelectedItem().getUserId(), title.getText(), description.getText(), location.getText(), contact.getText(), type.getValue().toString(), url.getText(), start, end);
                 editAppointmentHandle(updatedAppointment);
             } catch (Exception ex) {
                 System.out.println("Error: " + ex.getMessage());
@@ -221,7 +228,8 @@ public class FXMLAppointmentController implements Initializable {
         description.setText(appointment.getDescription());
         location.setText(appointment.getLocation());
         contact.setText(appointment.getContact());
-        type.setText(appointment.getType());
+//        type.setText(appointment.getType());
+        type.setValue(appointment.getType());
         url.setText(appointment.getUrl());
         
         Date mDate = appointment.getStart();

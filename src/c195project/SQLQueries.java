@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -101,6 +102,85 @@ public class SQLQueries {
         }
         
         return appointments;
+    }
+    
+    public static ArrayList<String> getAppointmentTypes() {
+        ArrayList<String> types = new ArrayList<>();
+        
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+//            String query = "SELECT type, COUNT(type) occurrances FROM appointment GROUP BY type;";
+            String inpersonQuery = "SELECT MONTHNAME(start) AS 'Month', count(type) AS 'In Person' FROM appointment WHERE type = 'In Person' GROUP BY MONTHNAME(start) ORDER BY MONTH(start);";
+            String onlineQuery = "SELECT MONTHNAME(start) AS 'Month', count(type) AS 'Online' FROM appointment WHERE type = 'Online' GROUP BY MONTHNAME(start) ORDER BY MONTH(start);";
+            String phoneQuery = "SELECT MONTHNAME(start) AS 'Month', count(type) AS 'Phone' FROM appointment WHERE type = 'Phone' GROUP BY MONTHNAME(start) ORDER BY MONTH(start);";
+            
+            ResultSet inpersonResult = statement.executeQuery(inpersonQuery);
+            types.add("Month | In Person");
+            while (inpersonResult.next()) {
+                types.add(inpersonResult.getString("Month") + " | " + inpersonResult.getString("In Person"));
+            }
+            ResultSet onlineResult = statement.executeQuery(onlineQuery);
+            types.add("");
+            types.add("Month | Online");
+            while (onlineResult.next()) {
+                types.add(onlineResult.getString("Month") + " | " + onlineResult.getString("Online"));
+            }
+            ResultSet phoneResult = statement.executeQuery(phoneQuery);
+            types.add("");
+            types.add("Month | Phone");
+            while (phoneResult.next()) {
+                types.add(phoneResult.getString("Month") + " | " + phoneResult.getString("Phone"));
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return types;
+    }
+    
+    public static ArrayList<String> getConsultantSchedule() {
+        ArrayList<String> schedules = new ArrayList<>();
+        
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+            String query = "SELECT userName, title, start, end FROM user, appointment WHERE appointment.userId = user.userId AND NOW() < start ORDER BY user.userId, start;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+                schedules.add(result.getString("userName") + " | " + result.getString("title") + " | " + result.getString("start") + " | " + result.getString("end"));
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return schedules;
+    }
+    
+    public static ArrayList<String> getCustomersCountInCity() {
+        ArrayList<String> cities = new ArrayList<>();
+        
+        try {
+            Statement statement = (Statement) conn.createStatement();
+            
+//            String query = "SELECT city FROM address, city WHERE city.cityId = address.cityId;";
+            String query = "SELECT city, COUNT(city) occurrances FROM address, city WHERE city.cityId = address.cityId GROUP BY city;";
+            
+            ResultSet result = statement.executeQuery(query);
+            
+            while (result.next()) {
+                cities.add(result.getString("city") + " | " + result.getString("occurrances"));
+            }
+        
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        
+        return cities;
     }
     
     public static ArrayList<Appointment> getAllAppointments7Days() {
