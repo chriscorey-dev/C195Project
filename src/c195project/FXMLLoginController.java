@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -19,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -40,6 +42,10 @@ public class FXMLLoginController implements Initializable {
     @FXML
     private Label errorLabel;
     
+    @FXML private Label usernameLabel;
+    @FXML private Label passwordLabel;
+    @FXML private Button loginButton;
+    
     @FXML
     private void loginAction(ActionEvent event) throws IOException {
         
@@ -48,8 +54,8 @@ public class FXMLLoginController implements Initializable {
         try {
             // Valid login
             if (result.next()) {
-                errorLabel.setTextFill(Color.web("#00ff00"));
-                errorLabel.setText("Logged in");
+//                errorLabel.setTextFill(Color.web("#00ff00"));
+//                errorLabel.setText("Logged in");
                 
                 User loggedInUser = new User(result.getInt("userId"), result.getString("username"));
                 C195Project.setLoggedInUser(loggedInUser);
@@ -62,18 +68,22 @@ public class FXMLLoginController implements Initializable {
                 outputFile.close();
                 
                 // Checks for impending appointments
-                if (SQLQueries.getUsersAppointments15Minutes()) {
+                if (SQLQueries.getUsersAppointments15Minutes(loggedInUser.getUserId())) {
                     Alert alert = new Alert(AlertType.INFORMATION);
                     alert.setTitle("Alert");
                     alert.setHeaderText(null);
                     alert.setContentText("You have a meeting within 15 minutes!");
 
                     alert.show();
+                    
+//                    ArrayList<Appointment> apps = SQLQueries.getUsersAppointments15Minutes();
+//                    for (Appointment app : apps) {
+//                        System.out.println("Apps:" + app.getTitle());
+//                    }
                 }
                 
                 SceneManager.loadScene(SceneManager.MAIN_FXML);
             } else {
-                // TODO: Multiple languages
                 errorLabel.setTextFill(Color.web("#ff0000"));
                 errorLabel.setText(getLocaleErrorMessage());
             }
@@ -102,7 +112,21 @@ public class FXMLLoginController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+        Locale locale = Locale.getDefault();
+        
+        switch(locale.getLanguage()) {
+            case "en":
+                loginButton.setText("Submit");
+                usernameLabel.setText("Username");
+                passwordLabel.setText("Password");
+                break;
+            case "es":
+                loginButton.setText("Enviar");
+                usernameLabel.setText("Nombre");
+                passwordLabel.setText("Contraseña");
+                break;
+            default:
+                break;
+        }
+    }
 }

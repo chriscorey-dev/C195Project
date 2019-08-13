@@ -9,6 +9,7 @@ import static c195project.DBConnection.conn;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -237,15 +238,32 @@ public class SQLQueries {
         return appointments;
     }
     
-    public static boolean getUsersAppointments15Minutes() {
+    public static boolean getUsersAppointments15Minutes(int userId) {
         try {
-            
             Statement statement = (Statement) conn.createStatement();
-            String query = "SELECT * FROM appointment WHERE start BETWEEN NOW() AND NOW() + INTERVAL 15 MINUTE;";
+            
+            // use clock
+            
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Date now = Date.from(Instant.now());
+            String nowString = format.format(now);
+            System.out.println("nowString: " + nowString);
+            
+//            String query = "SELECT * FROM appointment WHERE userId = "+userId+" AND start BETWEEN NOW() AND NOW() + INTERVAL 15 MINUTE;";
+            String query = "SELECT * FROM appointment WHERE userId = "+userId+" AND start BETWEEN CONVERT('"+nowString+"', DATETIME) AND CONVERT('"+nowString+"', DATETIME) + INTERVAL 15 MINUTE;";
             
             ResultSet result = statement.executeQuery(query);
             
-            return result.next();
+            if (result.next()) {
+                format.setTimeZone(TimeZone.getTimeZone("GMT"));
+                Date start = format.parse(result.getString("start"));
+                System.out.println("next app: " + format.parse(result.getString("start")));
+                return true;
+            }
+            
+            return false;
+//            return result.next();
         
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
